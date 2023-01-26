@@ -6,13 +6,7 @@ return function(use)
   use {'theHamsta/nvim-dap-virtual-text'}
   use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
 
-  require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
-  require("nvim-dap-virtual-text").setup {
-    enabled = true,
-    commented = true,
-  }
-  require("dapui").setup()
-
+  require("custom.dap")
 end
 
 
