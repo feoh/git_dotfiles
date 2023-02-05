@@ -6,6 +6,9 @@ return function(use)
   use {'theHamsta/nvim-dap-virtual-text'}
   use {'rcarriga/nvim-dap-ui', requires = {"mfussenegger/nvim-dap"}}
   use {'Olical/conjure'}
+  -- friendly-snippets
+  use {'rafamadriz/friendly-snippets'}
+  require("luasnip.loaders.from_vscode").lazy_load()
 
   require("custom.dap")
 end
