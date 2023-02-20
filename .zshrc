@@ -33,8 +33,9 @@ plugins=(git poetry ripgrep vi-mode virtualenv fzf)
 
 source $ZSH/oh-my-zsh.sh
 
-# Fix for busted fzf plugin on OSX
-export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+export FZF_DEFAULT_COMMAND="fd . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd -t d . $HOME"
 
 source $HOME/.aliases
 
