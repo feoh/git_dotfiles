@@ -1,4 +1,4 @@
-# My New Deliberately Craft Dot Files!
+# My New Productivity Focused Dot Files!
 
 In the past, I had another [repository](https://github.com/feoh/dotfiles) for dot files. I only used it sporadically because I 
 didn't actually have a solid sense of how to store things that only apply *everywhere*.
