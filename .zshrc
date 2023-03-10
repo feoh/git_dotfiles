@@ -31,6 +31,12 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git poetry ripgrep vi-mode virtualenv fzf)
 
+# On OSX, Enable homebrew completions
+if type brew &>/dev/null
+then
+	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
 source $ZSH/oh-my-zsh.sh
 
 export FZF_DEFAULT_COMMAND="fd . $HOME"
