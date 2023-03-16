@@ -48,3 +48,5 @@ source $HOME/.aliases
 
 # Created by `pipx` on 2023-02-15 20:39:07
 export PATH="$PATH:$HOME/.local/bin"
+# Add my rando binaries dir :)
+export PATH="$PATH:$HOME/bin"
