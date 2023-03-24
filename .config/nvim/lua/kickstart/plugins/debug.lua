@@ -9,7 +9,6 @@
 return {
   -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  'mfussenegger/nvim-dap-python',
   'theHamsta/nvim-dap-virtual-text',
   -- NOTE: And you can specify dependencies as well
   dependencies = {
@@ -80,12 +79,6 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
-    require("nvim-dap-virtual-text").setup {
-      enabled = true,
-      commented = true,
-    }
     require('dap-go').setup()
-    require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
-    require('dap-python').test_runner = 'pytest'
   end,
 }
