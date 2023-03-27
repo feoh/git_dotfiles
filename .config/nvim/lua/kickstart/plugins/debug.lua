@@ -53,6 +53,7 @@ return {
     vim.keymap.set('n', '<leader>B', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end)
+    vim.keymap.set('n', '<leader>ut', dapui.toggle)
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -84,5 +85,9 @@ return {
     -- Python specific config
     -- I've tried both with and without this :(
     require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
+    -- dap-virtual-text for when I'm on a laptop and the UI is too big
+    require("nvim-dap-virtual-text").setup {
+      commented = true,
+    }
   end,
 }
