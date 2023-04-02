@@ -57,14 +57,16 @@ require('lazy').setup({
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
-  { -- LSP Configuration & Plugins
+  {
+    -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
 
-      { -- Useful status updates for LSP
+      {
+        -- Useful status updates for LSP
         'j-hui/fidget.nvim',
         config = function()
           require('fidget').setup()
@@ -76,12 +78,14 @@ require('lazy').setup({
     },
   },
 
-  { -- Autocompletion
+  {
+    -- Autocompletion
     'hrsh7th/nvim-cmp',
     dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
   },
 
-  { -- Useful plugin to show you pending keybinds.
+  {
+    -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     config = function()
       vim.o.timeout = true
@@ -90,7 +94,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Adds git releated signs to the gutter, as well as utilities for managing changes
+  {
+    -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     config = function()
       -- See `:help gitsigns.txt`
@@ -112,7 +117,8 @@ require('lazy').setup({
   --     vim.cmd.colorscheme 'onedark'
   --   end,
   -- },
-  { -- Theme inspired by Atom
+  {
+    -- Theme inspired by Atom
     'Mofiqul/dracula.nvim',
     config = function()
       vim.cmd.colorscheme 'dracula'
@@ -120,7 +126,8 @@ require('lazy').setup({
   },
 
 
-  { -- Fancier statusline
+  {
+    -- Fancier statusline
     'nvim-lualine/lualine.nvim',
     config = function()
       -- Set lualine as statusline
@@ -137,7 +144,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Add indentation guides even on blank lines
+  {
+    -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     config = function()
       -- Enable `lukas-reineke/indent-blankline.nvim`
@@ -149,7 +157,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- "gc" to comment visual regions/lines
+  {
+    -- "gc" to comment visual regions/lines
     'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup()
@@ -170,7 +179,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Highlight, edit, and navigate code
+  {
+    -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
@@ -280,7 +290,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'help', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -453,7 +463,7 @@ cmp.setup {
     end,
   },
   mapping = cmp.mapping.preset.insert {
-    ['<C-d>'] = cmp.mapping.scroll_docs( -4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
@@ -472,8 +482,8 @@ cmp.setup {
     ['<S-Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable( -1) then
-        luasnip.jump( -1)
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
       else
         fallback()
       end
