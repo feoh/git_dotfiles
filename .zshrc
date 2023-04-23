@@ -58,4 +58,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # Activate 1password biometric auth
 OP_BIOMETRIC_UNLOCK_ENABLED=true
-source /Users/cpatti/.config/op/plugins.sh
+if [ -f $HOME/.config/op/plugins.sh ]; then
+	source $HOME/.config/op/plugins.sh
+fi
