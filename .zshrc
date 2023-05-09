@@ -61,3 +61,6 @@ OP_BIOMETRIC_UNLOCK_ENABLED=true
 if [ -f $HOME/.config/op/plugins.sh ]; then
 	source $HOME/.config/op/plugins.sh
 fi
+
+# nvimpager FTW!
+export PAGER=nvimpager
