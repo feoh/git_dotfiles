@@ -62,5 +62,8 @@ if [ -f $HOME/.config/op/plugins.sh ]; then
 	source $HOME/.config/op/plugins.sh
 fi
 
+# Neovim 4-evah!
+export EDITOR=nvim
+export VISUAL=nvim
 # nvimpager FTW!
-export PAGER=nvimpager
+# export PAGER=nvimpager
