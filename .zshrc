@@ -67,3 +67,6 @@ export EDITOR=nvim
 export VISUAL=nvim
 # nvimpager FTW!
 # export PAGER=nvimpager
+
+# Fetch OpenAI API key from 1Password
+export OPENAI_API_KEY=`op item get OpenAI --fields Credential`
