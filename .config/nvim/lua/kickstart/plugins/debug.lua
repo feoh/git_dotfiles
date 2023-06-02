@@ -13,7 +13,6 @@ return {
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
-    'theHamsta/nvim-dap-virtual-text',
 
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
@@ -21,7 +20,6 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
-    'mfussenegger/nvim-dap-python',
   },
   config = function()
     local dap = require 'dap'
@@ -44,7 +42,6 @@ return {
       },
     }
 
-
     -- Basic debugging keymaps, feel free to change to your liking!
     vim.keymap.set('n', '<F5>', dap.continue)
     vim.keymap.set('n', '<F1>', dap.step_into)
@@ -54,7 +51,6 @@ return {
     vim.keymap.set('n', '<leader>B', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end)
-    vim.keymap.set('n', '<leader>ut', dapui.toggle)
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -77,19 +73,14 @@ return {
         },
       },
     }
-
+    -- toggle to see last session result. Without this ,you can't see session output in case of unhandled exception.
+    vim.keymap.set("n", "<F7>", dapui.toggle)
+    
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
     require('dap-go').setup()
-    -- Python specific config
-    -- I've tried both with and without this :(
-    require('dap-python').setup('~/.virtualenvs/debugpy/bin/python')
-    -- dap-virtual-text for when I'm on a laptop and the UI is too big
-    require("nvim-dap-virtual-text").setup {
-      commented = true,
-    }
   end,
 }
