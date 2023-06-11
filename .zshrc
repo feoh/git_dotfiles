@@ -60,8 +60,6 @@ export NVM_DIR="$HOME/.nvm"
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 if [ -f $HOME/.config/op/plugins.sh ]; then
 	source $HOME/.config/op/plugins.sh
-	# Fetch OpenAI API key from 1Password
-	export OPENAI_API_KEY=`op item get OpenAI --fields Credential`
 fi
 
 # Neovim 4-evah!
