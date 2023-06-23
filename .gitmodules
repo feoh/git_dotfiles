@@ -1,3 +1,4 @@
 [submodule ".config/nvim"]
 	path = .config/nvim
-	url = https://github.com/nvim-lua/kickstart.nvim.git
+	url = git@github.com:feoh/kickstart.nvim.git
+	branch = freshstart
