@@ -220,10 +220,8 @@ vim.wo.number = true
 -- Enable mouse mode
 vim.o.mouse = 'a'
 
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamed'
+-- Don't care about the OS. TMUX! :)
+vim.o.clipboard = 'tmux'
 
 -- Enable break indent
 vim.o.breakindent = true
