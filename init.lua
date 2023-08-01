@@ -224,7 +224,7 @@ vim.wo.relativenumber = true
 vim.o.mouse = 'a'
 
 -- Don't care about the OS. TMUX! :)
-vim.o.clipboard = 'tmux'
+vim.o.clipboard = unnamed
 
 -- Enable break indent
 vim.o.breakindent = true
