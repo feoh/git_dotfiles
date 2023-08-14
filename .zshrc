@@ -30,7 +30,11 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git poetry ripgrep vi-mode virtualenv fzf)
+plugins=(git poetry ripgrep vi-mode virtualenv fzf tmux)
+
+# ALWAYS tmux!!! :)
+export ZSH_TMUX_AUTOSTART=true
+export ZSH_TMUX_CONFIG=$HOME/.config/tmux/tmux.conf
 
 # On OSX, Enable homebrew completions
 if type brew &>/dev/null
