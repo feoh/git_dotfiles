@@ -33,7 +33,10 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(git poetry ripgrep vi-mode virtualenv fzf tmux)
 
 # ALWAYS tmux!!! :)
-export ZSH_TMUX_AUTOSTART=true
+# But don't do this for remote (ssh) logins.
+if [ -z "$SSH_CLIENT" ]; then
+	export ZSH_TMUX_AUTOSTART=true
+fi
 export ZSH_TMUX_CONFIG=$HOME/.config/tmux/tmux.conf
 
 # On OSX, Enable homebrew completions
