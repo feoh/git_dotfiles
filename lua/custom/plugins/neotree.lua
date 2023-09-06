@@ -48,4 +48,12 @@ return {
       hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
     },
   },
+  config = function()
+    require("neo-tree").setup()
+    vim.keymap.set("n", "<leader>T", "<Cmd>Neotree toggle current reveal_force_cwd<CR>")
+    vim.keymap.set("n", "<leader>|", "<Cmd>Neotree reveal<CR>")
+    vim.keymap.set("n", "gd", "<Cmd>:Neotree float reveal_file=<cfile> reveal_force_cwd<CR>")
+    vim.keymap.set("n", "<leader>Br", "<Cmd>:Neotree toggle show buffers right<CR>")
+    vim.keymap.set("n", "<leader>Gs", "<Cmd>:Neotree float git_status<CR>")
+  end
 }
