@@ -34,6 +34,8 @@ plugins=(git poetry ripgrep vi-mode virtualenv fzf tmux)
 
 # ALWAYS tmux!!! :)
 # But don't do this for remote (ssh) logins.
+#
+# N.B. Remember to export ZSH_TMUX_AUTOSTART=false before manually sourcing .zshrc
 if [ -z "$SSH_CLIENT" ]; then
 	export ZSH_TMUX_AUTOSTART=true
 fi
