@@ -1,3 +1,11 @@
+# Platform specific hacks go here :)
+
+if [[ `uname -s` == "Darwin" ]]; then
+	alias xdg-open=/usr/bin/open
+fi
+
+# Universal aliases
+
 alias code='code-insiders'
 alias config='git --git-dir=$HOME/.cfg/.git/ --work-tree=$HOME'
 alias v='source .venv/bin/activate || source venv/bin/activate'
@@ -5,6 +13,4 @@ alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
 alias pr='poetry run'
-if [[ `uname -s` == "Darwin" ]]; then
-	alias xdg-open=/usr/bin/open
-fi
+alias sdf='ssh feoh@sverige.sdf.org'
