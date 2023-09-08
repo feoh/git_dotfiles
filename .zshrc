@@ -47,9 +47,15 @@ then
 	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
-export FZF_DEFAULT_COMMAND="fdfind . $HOME"
+if [[ `uname -s` == "Darwin" ]]; then
+	export FD_COMMAND="fd"
+else
+	export FD_COMMAND="fdfind"
+fi
+
+export FZF_DEFAULT_COMMAND="$FD_COMMAND . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fdfind -t d . $HOME"
+export FZF_ALT_C_COMMAND="$FD_COMMAND -t d . $HOME"
 
 if [[ `uname -s` == "NetBSD" ]]; then
 	export FZF_BASE="/usr/pkg/share/fzf"
