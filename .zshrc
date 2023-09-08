@@ -78,6 +78,11 @@ fi
 # Neovim 4-evah!
 export EDITOR=nvim
 export VISUAL=nvim
-# nvimpager FTW!
-# export PAGER=nvimpager
+
+# except on NetBSD where vim will have to do :)
+
+if [[ `uname -s` == "NetBSD" ]]; then
+	export EDITOR=vim
+	export VISUAL=vim
+fi
 
