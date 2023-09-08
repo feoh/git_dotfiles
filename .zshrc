@@ -47,11 +47,15 @@ then
 	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
+export FZF_DEFAULT_COMMAND="fdfind . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fdfind -t d . $HOME"
+
+if [[ `uname -s` == "NetBSD" ]]; then
+	export FZF_BASE="/usr/pkg/share/fzf"
+fi
 source $ZSH/oh-my-zsh.sh
 
-export FZF_DEFAULT_COMMAND="fd . $HOME"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd -t d . $HOME"
 
 source $HOME/.aliases
 
