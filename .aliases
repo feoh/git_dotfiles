@@ -13,4 +13,8 @@ alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
 alias pr='poetry run'
-alias sdf='ssh feoh@sverige.sdf.org'
+alias psh='poetry shell'
+
+# Fun :)
+alias ssdf='ssh feoh@sverige.sdf.org'
+alias fsdf='ssh feoh@faeroes.sdf.org'
