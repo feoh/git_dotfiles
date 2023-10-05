@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ `uname -o` == "Darwin" ]]; then
+	export FIREFOX_APP_PATH="/Applications/Firefox.app/Contents/MacOS/firefox"
+elif [ `uname -o` | grep -i 'linux' ]; then
+	export FIREFOX_APP_PATH="firefox"
+else
+	echo 'What ARE you?'
+fi
+
+$FIREFOX_APP_PATH -P Work
