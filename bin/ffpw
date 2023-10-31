@@ -8,4 +8,4 @@ else
 	echo 'What ARE you?'
 fi
 
-$FIREFOX_APP_PATH -P Work
+$FIREFOX_APP_PATH -P Work 2>/dev/null &

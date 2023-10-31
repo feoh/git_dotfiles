@@ -8,4 +8,4 @@ else
 	echo 'What ARE you?'
 fi
 
-$FIREFOX_APP_PATH -P Personal
+$FIREFOX_APP_PATH -P Personal 2>/dev/null &
