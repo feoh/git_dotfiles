@@ -69,6 +69,8 @@ source $HOME/.aliases
 export PATH="$PATH:$HOME/.local/bin"
 # Add my rando binaries dir :)
 export PATH="$PATH:$HOME/bin"
+# Cargo stuff!
+export PATH="$PATH:$HOME/.cargo/bin"
 
 # NVM nubbins
 export NVM_DIR="$HOME/.nvm"
@@ -92,3 +94,7 @@ if [[ `uname -s` == "NetBSD" ]]; then
 	export VISUAL=vim
 fi
 
+# Grudgingly going back to pyenv :)
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
