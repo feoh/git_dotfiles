@@ -76,10 +76,8 @@ export PATH="$PATH:$HOME/bin"
 # Cargo stuff!
 export PATH="$PATH:$HOME/.cargo/bin"
 
-# NVM nubbins
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# NVM gubbins
+[ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
 
 # Activate 1password biometric auth
 OP_BIOMETRIC_UNLOCK_ENABLED=true
