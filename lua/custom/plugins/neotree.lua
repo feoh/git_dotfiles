@@ -50,7 +50,7 @@ return {
   },
   config = function()
     require("neo-tree").setup()
-    vim.keymap.set("n", "<leader>T", "<Cmd>Neotree toggle current reveal_force_cwd<CR>")
+    vim.keymap.set("n", "<leader>T", "<Cmd>Neotree toggle<CR>")
     vim.keymap.set("n", "<leader>|", "<Cmd>Neotree reveal<CR>")
     vim.keymap.set("n", "gd", "<Cmd>:Neotree float reveal_file=<cfile> reveal_force_cwd<CR>")
     vim.keymap.set("n", "<leader>Br", "<Cmd>:Neotree toggle show buffers right<CR>")
