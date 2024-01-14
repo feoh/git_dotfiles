@@ -1,0 +1,12 @@
+account default
+account feoh@feoh.org
+host smtp.fastmail.com
+port 465
+from feoh@feoh.org
+user feoh@fastmail.com
+passwordeval "pass feoh@feoh.org"
+auth on
+tls on
+tls_trust_file	/etc/ssl/cert.pem
+logfile /Users/cpatti/.local/state/msmtp/msmtp.log
+tls_starttls off

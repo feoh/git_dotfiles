@@ -1,0 +1,28 @@
+# use program "pass" to handle and decrypt passwords
+set my_pass="`pass feoh@feoh.org`"
+set imap_user = "feoh@fastmail.com"
+set imap_pass=$my_pass
+
+#set sendmail="/opt/homebrew/bin/msmtp"
+set sendmail="msmtp"
+set use_from=yes
+
+set envelope_from=yes
+set from = "feoh@feoh.org"
+set realname = "Chris Patti"
+
+set folder = "imaps://imap.fastmail.com:993"
+set spoolfile = "+INBOX"
+set postponed = "+[Gmail]/Drafts"
+
+set header_cache = ~/.mutt/cache/headers
+set message_cachedir = ~/.mutt/cache/bodies
+set certificate_file = ~/.mutt/certificates
+
+set move = no
+
+set sort = 'threads'
+set sort_aux = 'last-date-received'
+set imap_check_subscribed
+
+set editor='nvim'
