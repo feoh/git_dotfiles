@@ -26,3 +26,7 @@ set sort_aux = 'last-date-received'
 set imap_check_subscribed
 
 set editor='nvim'
+
+# Open URLs in emails
+macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
