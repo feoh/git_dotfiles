@@ -11,6 +11,8 @@ alias config='git --git-dir=$HOME/.cfg/.git/ --work-tree=$HOME'
 alias v='source .venv/bin/activate || source venv/bin/activate'
 alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
+alias mscp="scp -i ~/.ssh/oldevops.pem"
+alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
 alias pr='poetry run'
 alias psh='poetry shell'
