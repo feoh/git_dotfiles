@@ -1,0 +1,34 @@
+# use program "pass" to handle and decrypt passwords
+set my_pass="`pass cpatti@mit.edu`"
+set imap_user = "cpatti@mit.edu"
+
+set smtp_pass=$my_pass
+
+set sendmail="msmtp"
+set use_from=yes
+
+set envelope_from=yes
+set from = "cpatti@mit.edu"
+set realname = "Chris Patti"
+
+
+set hostname = "mit.edu"
+set folder = "imaps://outlook.office365.com"
+set spoolfile = "+INBOX"
+#set smtp_url = "smtp://cpatti/$smtp_pass@outgoing.mit.edu:587"
+set imap_authenticators = "oauthbearer:xoauth2"
+set imap_oauth_refresh_command = "$HOME/bin/mutt_oauth2.py $HOME/.config/mutt/mit_my_token"
+set smtp_oauth_refresh_command = ${imap_oauth_refresh_command}
+set ssl_force_tls = "yes"
+set ssl_starttls = "yes"
+set move = no
+
+set sort = 'threads'
+set sort_aux = 'last-date-received'
+set imap_check_subscribed
+
+set editor='nvim'
+
+# Open URLs in emails
+macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"

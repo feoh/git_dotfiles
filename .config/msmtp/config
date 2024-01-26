@@ -10,3 +10,15 @@ tls on
 tls_trust_file	/etc/ssl/cert.pem
 logfile /Users/cpatti/.local/state/msmtp/msmtp.log
 tls_starttls off
+
+account cpatti@mit.eduj
+host outgoing.mit.edu
+port 587
+from cpatti@mit.edu
+user cpatti
+passwordeval "pass cpatti@mit.edu"
+auth on
+tls on
+tls_trust_file	/etc/ssl/cert.pem
+logfile /Users/cpatti/.local/state/msmtp/mit_msmtp.log
+tls_starttls on
