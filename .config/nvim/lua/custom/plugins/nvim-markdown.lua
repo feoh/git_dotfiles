@@ -1,6 +1,6 @@
 return {
   "ixru/nvim-markdown",
-  options = {
-    markdown_folding = 1
-  }
+  config = function()
+    vim.g.markdown_folding = 1
+  end,
 }
