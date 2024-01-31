@@ -88,7 +88,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -193,6 +193,7 @@ require('lazy').setup({
     -- Theme inspired by Atom
     'Mofiqul/dracula.nvim',
     priority = 1000,
+    lazy = false,
     config = function()
       vim.cmd.colorscheme 'dracula'
     end,
@@ -205,7 +206,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'dracula',
+        theme = 'auto',
         component_separators = '|',
         section_separators = '',
       },
