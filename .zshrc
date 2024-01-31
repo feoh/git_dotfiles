@@ -94,7 +94,6 @@ if [[ `uname -s` == "NetBSD" ]]; then
 	export VISUAL=vim
 fi
 
-# Grudgingly going back to pyenv :)
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
