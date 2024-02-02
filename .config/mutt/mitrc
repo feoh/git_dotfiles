@@ -1,5 +1,5 @@
 # use program "pass" to handle and decrypt passwords
-set my_pass="`pass cpatti@mit.edu`"
+set my_pass="`$HOME/bin/mitmuttpassword`"
 set imap_user = "cpatti@mit.edu"
 
 set smtp_pass=$my_pass
