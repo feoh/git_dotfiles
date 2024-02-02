@@ -1,5 +1,5 @@
 # use program "pass" to handle and decrypt passwords
-set my_pass="`$HOME/bin/fmmuttpassword`"
+set my_pass="`pass feoh@feoh.org`"
 set imap_user = "feoh@fastmail.com"
 set imap_pass=$my_pass
 
