@@ -108,3 +108,8 @@ export NVM_DIR="$HOME/.nvm"
 if [ -f $HOME/.cargo/env ]; then
 	source "$HOME/.cargo/env"
 fi
+
+# add Pulumi to the PATH if we can't install as a package.
+if [ -d /home/feoh/.pulumi/bin ]; then
+	export PATH=$PATH:/home/feoh/.pulumi/bin
+fi
