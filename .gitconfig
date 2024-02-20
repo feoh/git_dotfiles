@@ -1,0 +1,29 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Chris Patti
+	email = feoh@feoh.org
+# Please adapt and uncomment the following lines:
+#	name = Christopher Patti
+#	email = feoh@feoh.org
+[commit]
+	template = /Users/cpatti/src/mit/ol-infrastructure/.git_commit_template
+	verbose = true
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[pull]
+	rebase = true
+[merge]
+	conflictstyle = zdiff3
+[transfer]
+	fsckobjects = true
+[fetch]
+	fsckobjects = true
+[receive]
+	fsckObjects = true
