@@ -26,3 +26,6 @@ alias nvpull='config subtree pull --prefix .config/nvim https://github.com/feoh/
 
 # Mutt mail for MIT!
 alias mitt='mutt -F ~/.config/mutt/mitrc'
+
+# tl is already taken by the tmux plugin!
+alias toolong=$HOME/.local/bin/tl
