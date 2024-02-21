@@ -12,6 +12,9 @@ return {
 			"size",
 			"mtime",
 		},
+		keymaps = {
+			["<BS>"] = "actions.parent",
+		}
 	},
 	-- Optional dependencies
 	dependencies = { "nvim-tree/nvim-web-devicons" },
