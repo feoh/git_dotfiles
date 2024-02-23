@@ -29,3 +29,7 @@ alias mitt='mutt -F ~/.config/mutt/mitrc'
 
 # tl is already taken by the tmux plugin!
 alias toolong=$HOME/.local/bin/tl
+
+# I'm constantly typing poetry run nvim . :)
+alias pet='poetry run nvim .'
+alias pem='poetry run nvim __main__.py'
