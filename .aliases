@@ -22,7 +22,7 @@ alias ssdf='ssh feoh@sverige.sdf.org'
 alias fsdf='ssh feoh@faeroes.sdf.org'
 
 # Update mah kickstart.nvim fork in my local dotfiles!
-alias nvpull='config subtree pull --prefix .config/nvim https://github.com/feoh/kickstart.nvim main'
+alias nvpull='config subtree pull --prefix .config/nvim https://github.com/feoh/kickstart.nvim master'
 
 # Mutt mail for MIT!
 alias mitt='mutt -F ~/.config/mutt/mitrc'
