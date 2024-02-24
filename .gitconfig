@@ -6,7 +6,6 @@
 #	name = Christopher Patti
 #	email = feoh@feoh.org
 [commit]
-	template = /Users/cpatti/src/mit/ol-infrastructure/.git_commit_template
 	verbose = true
 [filter "lfs"]
 	process = git-lfs filter-process

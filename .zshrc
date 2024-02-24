@@ -114,7 +114,8 @@ if [ -d /home/feoh/.pulumi/bin ]; then
 	export PATH=$PATH:/home/feoh/.pulumi/bin
 fi
 
-# Yay atuin! Magical shell history!
+
+# Make my shell history be EVERYWHERE :)
 if type atuin &>/dev/null
 then
 	eval "$(atuin init zsh)"
