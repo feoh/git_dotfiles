@@ -32,3 +32,5 @@ set editor='nvim'
 # Open URLs in emails
 macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+
+set signature = ~/.mit-signature
