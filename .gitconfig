@@ -20,11 +20,11 @@
 	rebase = true
 [merge]
 	conflictstyle = zdiff3
-[transfer]
-	fsckobjects = true
-[fetch]
-	fsckobjects = true
-[receive]
-	fsckObjects = true
+; [transfer]
+; 	fsckobjects = true
+; [fetch]
+; 	fsckobjects = true
+; [receive]
+; 	fsckObjects = true
 [includeIf "gitdir:~/src/personal/gloria"]
   path = .gitconfig-gloria
