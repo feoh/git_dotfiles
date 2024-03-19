@@ -18,8 +18,8 @@
 	autoSetupRemote = true
 [pull]
 	rebase = true
-[merge]
-	conflictstyle = zdiff3
+; [merge]
+; 	conflictstyle = zdiff3
 ; [transfer]
 ; 	fsckobjects = true
 ; [fetch]
