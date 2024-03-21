@@ -47,15 +47,13 @@ then
 	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 fi
 
-# if [[ `uname -s` == "Darwin" ]]; then
-# 	export FD_COMMAND="fd"
-# else
-# 	export FD_COMMAND="fdfind"
-# fi
-#
+# Some like Ubuntu are stupid and afraid of calling fd fd.
+if [[ `whence -p fdfind` ]]; then
+	export FD_COMMAND="fdfind"
+else
+	export FD_COMMAND="fd"
+fi
 
-# No longer need above because fd now works as-is on Manjaro Linux
-export FD_COMMAND="fd"
 
 export FZF_DEFAULT_COMMAND="$FD_COMMAND . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
