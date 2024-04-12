@@ -1,0 +1,11 @@
+{
+	"$schema": "https://joplinapp.org/schema/settings.json",
+	"locale": "en_GB",
+	"api.token": "785a96533fdc9a3b6e441c2b9dbd94c2002c75227c4073ce83dcdcbb0521b0e7b6ee8daf81943152407c2f8203d25f9f0f4e5735ba809b9ebc6bbd3043229672",
+	"markdown.plugin.softbreaks": false,
+	"markdown.plugin.typographer": false,
+	"sync.target": 6,
+	"sync.8.url": "http://squishingzoo:5005/joplin/",
+	"sync.6.path": "http://squishingzoo:5005/joplin/",
+	"sync.6.username": "feoh"
+}
