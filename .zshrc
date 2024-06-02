@@ -92,6 +92,9 @@ if [[ `uname -s` == "NetBSD" ]]; then
 	export VISUAL=vim
 fi
 
+# When in Rome - add snaps to path if on Ubuntu.
+[[ -d /snap/bin ]] && export PATH=$PATH:/snap/bin
+
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
@@ -103,9 +106,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Go Go Gadget RUST!
-if [ -f $HOME/.cargo/env ]; then
-	source "$HOME/.cargo/env"
-fi
+[[ -d $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
 
 # add Pulumi to the PATH if we can't install as a package.
 if [ -d /home/feoh/.pulumi/bin ]; then
