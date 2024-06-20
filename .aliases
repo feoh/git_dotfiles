@@ -35,3 +35,4 @@ alias pet='poetry run nvim .'
 alias pem='poetry run nvim __main__.py'
 
 alias cargoupdate='cargo install-update -a'
+alias bat=batcat
