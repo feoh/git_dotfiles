@@ -119,3 +119,6 @@ if type atuin &>/dev/null
 then
 	eval "$(atuin init zsh)"
 fi
+
+# Stop bugging me about updates. JUST DOO EET!
+export DISABLE_UPDATE_PROMPT=true
