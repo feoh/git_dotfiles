@@ -122,3 +122,6 @@ fi
 
 # Stop bugging me about updates. JUST DOO EET!
 export DISABLE_UPDATE_PROMPT=true
+
+# Work schtuff.
+AWS_DEFAULT_REGION="us-east-1"
