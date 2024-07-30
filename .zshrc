@@ -59,6 +59,9 @@ export FZF_DEFAULT_COMMAND="$FD_COMMAND . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FD_COMMAND -t d . $HOME"
 
+# Stop whining at me and just auto update already oh my zsh! :)
+zstyle ':omz:update' mode auto
+
 if [[ `uname -s` == "NetBSD" ]]; then
 	export FZF_BASE="/usr/pkg/share/fzf"
 fi
