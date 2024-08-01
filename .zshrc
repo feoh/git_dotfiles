@@ -128,3 +128,11 @@ export DISABLE_UPDATE_PROMPT=true
 
 # Work schtuff.
 AWS_DEFAULT_REGION="us-east-1"
+
+# Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
+if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]; then
+	alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
+fi
+
+# Todoist API key magic
+# export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
