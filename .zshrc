@@ -1,6 +1,3 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -128,6 +125,7 @@ export DISABLE_UPDATE_PROMPT=true
 
 # Work schtuff.
 AWS_DEFAULT_REGION="us-east-1"
+AWS_REGION="us-east-1"
 
 # Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
 if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]; then
@@ -136,3 +134,7 @@ fi
 
 # Todoist API key magic
 # export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
+
+# golang! 
+export GOPATH=$HOME/go
+export PATH="$PATH:$GOPATH/bin"
