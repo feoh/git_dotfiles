@@ -5,8 +5,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
-ZSH_THEME="ys"
+ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
@@ -130,6 +129,14 @@ AWS_REGION="us-east-1"
 # Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
 if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]; then
 	alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
+fi
+
+# Under WSL, we KINDA have Wayland, but not really, and that blows up Neovim. Ungh. :)
+# Add an alias so if we actually WANT the pseudo wayland, we can haz.
+
+if [[ $(uname -r | grep "microsoft") ]] then
+	unset WAYLAND_DISPLAY
+	alias wway='export WAYLAND_DISPLAY=wayland-0'
 fi
 
 # Todoist API key magic
