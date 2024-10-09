@@ -2,6 +2,8 @@
 
 if [[ `uname -s` == "Darwin" ]]; then
 	alias xdg-open=/usr/bin/open
+else
+	alias bat=batcat
 fi
 
 # Universal aliases
@@ -35,4 +37,3 @@ alias pet='poetry run nvim .'
 alias pem='poetry run nvim __main__.py'
 
 alias cargoupdate='cargo install-update -a'
-alias bat=batcat

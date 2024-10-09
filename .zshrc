@@ -124,7 +124,6 @@ fi
 export DISABLE_UPDATE_PROMPT=true
 
 # Work schtuff.
-AWS_DEFAULT_REGION="us-east-1"
 AWS_REGION="us-east-1"
 
 # Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
