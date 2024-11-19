@@ -18,6 +18,8 @@ alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
 alias pr='poetry run'
 alias psh='poetry shell'
+# ssh with Gloria key
+alias gssh='ssh -i ~/.ssh/id_ed25519_chrisgloria'
 
 # Fun :)
 alias ssdf='ssh feoh@sverige.sdf.org'
