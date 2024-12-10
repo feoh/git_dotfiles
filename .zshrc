@@ -140,5 +140,4 @@ fi
 # export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
 
 # golang! 
-export GOPATH=$HOME/go
-export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:/usr/local/go/bin"
