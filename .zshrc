@@ -27,16 +27,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git poetry vi-mode virtualenv fzf tmux kubectl helm)
-
-# ALWAYS tmux!!! :)
-# But don't do this for remote (ssh) logins.
-#
-# N.B. Remember to export ZSH_TMUX_AUTOSTART=false before manually sourcing .zshrc
-if [ -z "$SSH_CLIENT" ]; then
-	export ZSH_TMUX_AUTOSTART=true
-fi
-export ZSH_TMUX_CONFIG=$HOME/.config/tmux/tmux.conf
+plugins=(git poetry vi-mode virtualenv fzf kubectl helm)
 
 # On OSX, Enable homebrew completions
 if type brew &>/dev/null
@@ -128,13 +119,13 @@ if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Pas
 	alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
 fi
 
-# Under WSL, we KINDA have Wayland, but not really, and that blows up Neovim. Ungh. :)
-# Add an alias so if we actually WANT the pseudo wayland, we can haz.
-
-if [[ $(uname -r | grep "microsoft") ]] then
-	unset WAYLAND_DISPLAY
-	alias wway='export WAYLAND_DISPLAY=wayland-0'
-fi
+# # Under WSL, we KINDA have Wayland, but not really, and that blows up Neovim. Ungh. :)
+# # Add an alias so if we actually WANT the pseudo wayland, we can haz.
+#
+# if [[ $(uname -r | grep "microsoft") ]] then
+# 	unset WAYLAND_DISPLAY
+# 	alias wway='export WAYLAND_DISPLAY=wayland-0'
+# fi
 
 # Todoist API key magic
 # export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
