@@ -86,9 +86,6 @@ fi
 # When in Rome - add snaps to path if on Ubuntu.
 [[ -d /snap/bin ]] && export PATH=$PATH:/snap/bin
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
 
 
 # NVM gubbins!
