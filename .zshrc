@@ -132,3 +132,5 @@ fi
 
 # golang! 
 export PATH="$PATH:/usr/local/go/bin"
+
+fpath+=~/.zfunc; autoload -Uz compinit; compinit
