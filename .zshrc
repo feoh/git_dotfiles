@@ -27,7 +27,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git poetry vi-mode virtualenv fzf kubectl helm uv aws)
+plugins=(git poetry vi-mode virtualenv fzf kubectl helm uv aws docker)
 
 # On OSX, Enable homebrew completions
 if type brew &>/dev/null
@@ -113,6 +113,7 @@ export DISABLE_UPDATE_PROMPT=true
 
 # Work schtuff.
 AWS_REGION="us-east-1"
+AWS_DEFAULT_REGION="us-east-1"
 
 # Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
 if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]; then
