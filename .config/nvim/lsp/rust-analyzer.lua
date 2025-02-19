@@ -1,4 +1,4 @@
-vim.lsp.config('rust-analyzer', {
+return {
   -- Command and arguments to start the server.
   cmd = { 'rust-analyzer' },
   -- Filetypes to automatically attach to.
@@ -8,4 +8,4 @@ vim.lsp.config('rust-analyzer', {
   -- a "Cargo.toml" file. Files that share a root directory will reuse
   -- the connection to the same LSP server.
   root_markers = { 'rust-project.json', 'Cargo.toml' },
-})
+}

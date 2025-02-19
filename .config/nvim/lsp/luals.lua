@@ -1,5 +1,4 @@
-vim.lsp.config['luals'] = {
-  -- Command and arguments to start the server.
+return {
   cmd = { 'lua-language-server' },
   -- Filetypes to automatically attach to.
   filetypes = { 'lua' },
