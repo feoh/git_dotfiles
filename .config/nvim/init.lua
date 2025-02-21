@@ -1,10 +1,8 @@
 require("config.lazy")
-require("config.kickstart-lsp-config")
+require("config.keymaps")
 
 vim.cmd("colorscheme carbonfox")
 
 require('lualine').setup()
 
--- Enable the LSPs!
-vim.lsp.enable({'luals', 'pyright', 'rust-analyzer'})
 
