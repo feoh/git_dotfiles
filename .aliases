@@ -40,3 +40,5 @@ alias pem='poetry run nvim __main__.py'
 
 alias cargoupdate='cargo install-update -a'
 alias gsnp='git -c pager.show=false show'
+# Unfuck Wayland on WSL2
+alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
