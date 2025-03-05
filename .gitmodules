@@ -1,3 +1,0 @@
-[submodule "/Users/cpatti/.config/nvim"]
-	path = /Users/cpatti/.config/nvim
-	url = git@github.com:feoh/neovim_config_experimental.git
