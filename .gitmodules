@@ -1,3 +1,0 @@
-[submodule "nvim"]
-	path = nvim
-	url = git@github.com:feoh/neovim_config_experimental.git
