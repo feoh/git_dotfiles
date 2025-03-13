@@ -13,14 +13,13 @@ config.font_size = 20
 -- config.color_scheme = "AdventureTime"
 config.color_scheme = "Dark Pastel (Gogh)"
 
--- WSL first please!
-config.default_prog = { "ubuntu" }
-
 config.keys = {
 	{ key = "l", mods = "ALT", action = wezterm.action.ShowLauncher },
 }
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
+	-- WSL first please!
+	config.default_prog = { "ubuntu" }
 	config.launch_menu = {
 		{
 			args = { "ubuntu" },
