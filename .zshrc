@@ -138,3 +138,6 @@ fpath+=~/.zfunc; autoload -Uz compinit; compinit
 
 [ -s ~/.luaver/luaver ] && . ~/.luaver/luaver
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/cpatti/.lmstudio/bin"
