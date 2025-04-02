@@ -32,7 +32,7 @@ plugins=(git poetry vi-mode virtualenv fzf gh kubectl helm uv aws docker)
 # On OSX, Enable homebrew completions
 if type brew &>/dev/null
 then
-	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+	eval "$(brew shellenv)"
 fi
 
 # Some like Ubuntu are stupid and afraid of calling fd fd.
