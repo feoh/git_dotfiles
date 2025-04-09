@@ -56,7 +56,8 @@ fi
 source $ZSH/oh-my-zsh.sh
 
 
-source $HOME/.aliases
+source $HOME/.config/zsh/aliases
+source $HOME/.config/zsh/functions
 
 # Created by `pipx` on 2023-02-15 20:39:07
 export PATH="$PATH:$HOME/.local/bin"
