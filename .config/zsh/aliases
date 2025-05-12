@@ -43,3 +43,5 @@ alias cargoupdate='cargo install-update -a'
 alias gsnp='git -c pager.show=false show'
 # Unfuck Wayland on WSL2
 alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
+alias ov='cd $HOME/src/mit/ol-infrastructure && source .venv/bin/activate'
+alias nvbuild='make CMAKE_BUILD_TYPE=Release'
