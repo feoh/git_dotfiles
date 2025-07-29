@@ -16,7 +16,7 @@ alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
 alias mscp="scp -i ~/.ssh/oldevops.pem"
 alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
-alias gemini='export GEMINI_API_KEY=`op item get 'GoogleGeminiAPI' --fields credential`'
+alias gemapi='export GEMINI_API_KEY=`op item get 'GoogleGeminiAPI' --reveal --fields credential`'
 alias pr='poetry run'
 alias psh='poetry shell'
 # ssh with Gloria key
