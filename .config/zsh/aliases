@@ -1,11 +1,3 @@
-# Platform specific hacks go here :)
-
-if [[ `uname -s` == "Darwin" ]]; then
-	alias xdg-open=/usr/bin/open
-else
-	alias bat=batcat
-fi
-
 # Universal aliases
 
 alias vcode='code-insiders'
@@ -15,7 +7,8 @@ alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
 alias mscp="scp -i ~/.ssh/oldevops.pem"
 alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
-alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --fields credential`'
+alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --reveal --fields credential`'
+alias clapi='export CLAUDE_API_KEY=`op item get 'Claude_API_Key' --reveal --fields credential`'
 alias gemapi='export GEMINI_API_KEY=`op item get 'GoogleGeminiAPI' --reveal --fields credential`'
 alias pr='poetry run'
 alias psh='poetry shell'
