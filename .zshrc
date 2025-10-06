@@ -121,14 +121,6 @@ if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Pas
 	alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
 fi
 
-# # Under WSL, we KINDA have Wayland, but not really, and that blows up Neovim. Ungh. :)
-# # Add an alias so if we actually WANT the pseudo wayland, we can haz.
-#
-# if [[ $(uname -r | grep "microsoft") ]] then
-# 	unset WAYLAND_DISPLAY
-# 	alias wway='export WAYLAND_DISPLAY=wayland-0'
-# fi
-
 # Todoist API key magic
 # export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
 
