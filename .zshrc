@@ -27,9 +27,13 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git poetry vi-mode virtualenv fzf gh kubectl helm uv aws docker)
+plugins=(git vi-mode virtualenv fzf gh kubectl helm uv aws docker)
 
 # On OSX, Enable homebrew completions
+if [[ `uname` == "Darwin" ]]
+then
+	export PATH="$PATH:/opt/homebrew/bin"
+fi
 if type brew &>/dev/null
 then
 	eval "$(brew shellenv)"
