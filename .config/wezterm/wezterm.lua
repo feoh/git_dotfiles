@@ -12,6 +12,7 @@ config.font_size = 20
 -- For example, changing the color scheme:
 -- config.color_scheme = "AdventureTime"
 config.color_scheme = "Dark Pastel (Gogh)"
+-- config.text_min_contrast_ratio = 4.5
 
 config.keys = {
 	{ key = "l", mods = "ALT", action = wezterm.action.ShowLauncher },
