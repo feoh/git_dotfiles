@@ -20,6 +20,11 @@ font pango: FiraCode nerd Font 20
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
+exec --no-startup-id nitrogen --restore
+
+# We need zoom!
+bindsym $mod+m exec magnus
+
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
