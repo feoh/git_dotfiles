@@ -40,3 +40,6 @@ alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
 alias nvbuild='make CMAKE_BUILD_TYPE=Release'
 alias elfilc='nvim $(git show --oneline | head -2 | tail -1 | cut -d " " -f 3 | sed "s/a\///g")'
 alias copilot='npx @github/copilot'
+
+# software installs
+alias getnvm='url -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash'
