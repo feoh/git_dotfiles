@@ -1,0 +1,5 @@
+font-family = FiraCode 
+font-size = 22
+cursor-style-blink = true
+shell-integration-features = cursor,sudo,title,ssh-env,no-ssh-terminfo,path
+theme="Catppuccin Mocha"
