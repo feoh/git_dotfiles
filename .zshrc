@@ -140,3 +140,6 @@ export PATH="$PATH:/Users/cpatti/.lmstudio/bin"
 
 # Tell i3-sensible-terminal and cousing that wezterm is DA BOMB!
 export TERMINAL=wezterm
+
+# Amp CLI
+export PATH="/home/feoh/.amp/bin:$PATH"
