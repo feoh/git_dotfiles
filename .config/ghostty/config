@@ -4,3 +4,4 @@ cursor-style-blink = true
 cursor-style = block
 shell-integration-features = no-cursor,sudo,title,ssh-env,no-ssh-terminfo,path
 theme="Catppuccin Mocha"
+keybind = shift+enter=text:\x1b\r
