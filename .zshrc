@@ -68,7 +68,11 @@ export PATH="$PATH:$HOME/.local/bin"
 # Add my rando binaries dir :)
 export PATH="$PATH:$HOME/bin"
 # Cargo stuff!
-export PATH="$PATH:$HOME/.cargo/bin"
+. "$HOME/.cargo/env"
+
+# Volta!
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
 
 
 # Activate 1password biometric auth
