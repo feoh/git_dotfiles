@@ -65,14 +65,9 @@ source $HOME/.config/zsh/functions
 
 # Created by `pipx` on 2023-02-15 20:39:07
 export PATH="$PATH:$HOME/.local/bin"
+
 # Add my rando binaries dir :)
 export PATH="$PATH:$HOME/bin"
-# Cargo stuff!
-. "$HOME/.cargo/env"
-
-# Volta!
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
 
 
 # Activate 1password biometric auth
