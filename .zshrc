@@ -69,6 +69,10 @@ export PATH="$PATH:$HOME/.local/bin"
 # Add my rando binaries dir :)
 export PATH="$PATH:$HOME/bin"
 
+# Volta!
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
 
 # Activate 1password biometric auth
 OP_BIOMETRIC_UNLOCK_ENABLED=true
@@ -91,8 +95,6 @@ fi
 [[ -d /snap/bin ]] && export PATH=$PATH:/snap/bin
 
 
-# Go Go Gadget RUST!
-[[ -d $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
 
 # add Pulumi to the PATH if we can't install as a package.
 if [ -d /home/feoh/.pulumi/bin ]; then
