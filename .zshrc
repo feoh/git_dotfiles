@@ -28,16 +28,6 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git vi-mode virtualenv fzf gh kubectl helm uv aws docker)
 
-# On OSX, Enable homebrew completions
-if [[ `uname` == "Darwin" ]]
-then
-	export PATH="$PATH:/opt/homebrew/bin"
-fi
-if type brew &>/dev/null
-then
-	eval "$(brew shellenv)"
-fi
-
 # Some like Ubuntu are stupid and afraid of calling fd fd.
 if [[ `whence -p fdfind` ]]; then
 	export FD_COMMAND="fdfind"
@@ -122,18 +112,6 @@ fi
 # Todoist API key magic
 # export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
 
-# golang! 
-export PATH="$PATH:/usr/local/go/bin"
-
-
 [ -s ~/.luaver/luaver ] && . ~/.luaver/luaver
 
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/cpatti/.lmstudio/bin"
-
-# Tell i3-sensible-terminal and cousing that wezterm is DA BOMB!
-export TERMINAL=wezterm
-
-# Amp CLI
-export PATH="/home/feoh/.amp/bin:$PATH"
