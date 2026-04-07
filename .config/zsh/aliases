@@ -39,7 +39,10 @@ alias gsnp='git -c pager.show=false show'
 alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
 alias nvbuild='make CMAKE_BUILD_TYPE=Release'
 alias elfilc='nvim $(git show --oneline | head -2 | tail -1 | cut -d " " -f 3 | sed "s/a\///g")'
+
+# BOW TO YOUR NEW AI OVERLORDS!
 alias copilot='npx @github/copilot'
+alias gemini='npx @google/gemini-cli'
 
 # software installs
 alias getnvm='url -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash'
