@@ -115,3 +115,7 @@ fi
 [ -s ~/.luaver/luaver ] && . ~/.luaver/luaver
 
 
+# OpenClaw Completion
+if [ -d "$HOME/.openclaw" ]; then
+    source "/home/feoh/.openclaw/completions/openclaw.zsh"
+fi
