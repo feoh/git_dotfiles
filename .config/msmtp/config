@@ -16,7 +16,7 @@ host outgoing.mit.edu
 port 587
 from cpatti@mit.edu
 user cpatti
-passwordeval "pass cpatti@mit.edu"
+passwordeval "op item get s2fi2wbaq7hlhpdiku4szaxsjm --reveal --field password"
 auth on
 tls on
 tls_trust_file	/etc/ssl/cert.pem

@@ -1,6 +1,8 @@
 # use program "pass" to handle and decrypt passwords
-set my_pass="`pass cpatti@mit.edu`"
+# set my_pass="`pass cpatti@mit.edu`"
+set my_pass="`op item get s2fi2wbaq7hlhpdiku4szaxsjm --reveal --field password`"
 set imap_user = "cpatti@mit.edu"
+set imap_pass = $my_pass
 
 set smtp_pass=$my_pass
 
@@ -15,14 +17,14 @@ set realname = "Chris Patti"
 set hostname = "mit.edu"
 set folder = "imaps://outlook.office365.com"
 set spoolfile = "+INBOX"
-#set smtp_url = "smtp://cpatti/$smtp_pass@outgoing.mit.edu:587"
-set imap_authenticators = "oauthbearer:xoauth2"
-set imap_oauth_refresh_command = "$HOME/bin/mutt_oauth2.py $HOME/.config/mutt/mit_my_token"
-set smtp_oauth_refresh_command = ${imap_oauth_refresh_command}
-set ssl_force_tls = "yes"
-set ssl_starttls = "yes"
 set move = no
 
+# Oauth2 hoo-ha
+# /home/feoh/.local/bin/mutt-oauth2
+set imap_authenticators="oauthbearer:xoauth2"
+set imap_oauth_refresh_command="/home/feoh/.local/bin/mutt-oauth2"
+set smtp_authenticators=${imap_authenticators}
+set smtp_oauth_refresh_command=${imap_oauth_refresh_command}
 set sort = 'threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
