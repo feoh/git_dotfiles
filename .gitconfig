@@ -7,6 +7,8 @@
 #	email = feoh@feoh.org
 [includeIf "gitdir:~/src/personal/gloria"]
   path = .gitconfig-gloria
+[includeIf "gitdir:~/src/personal/iscahack"]
+  path = .gitconfig-iscahack
 
 # Branch and Repository Management
 [branch]
