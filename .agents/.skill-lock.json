@@ -1,0 +1,105 @@
+{
+  "version": 3,
+  "skills": {
+    "docker-uv-image-builds": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/containers/docker-uv-image-builds/SKILL.md",
+      "skillFolderHash": "618f7a6038bad551613527008c8f14d0cf867a32",
+      "installedAt": "2026-05-22T20:27:10.006Z",
+      "updatedAt": "2026-05-22T20:27:10.006Z"
+    },
+    "dagster-code-location-structure": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/dagster/dagster-code-location-structure/SKILL.md",
+      "skillFolderHash": "e1e41513b852b0f9ad838843da3b4c3cba7224c4",
+      "installedAt": "2026-05-22T20:27:10.008Z",
+      "updatedAt": "2026-05-22T20:27:10.008Z"
+    },
+    "pulumi-modify-existing": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/infrastructure/pulumi-modify-existing/SKILL.md",
+      "skillFolderHash": "c64bc1a9edf9c08a8d0b3415a3a7e4ab961b9c60",
+      "installedAt": "2026-05-22T20:27:10.008Z",
+      "updatedAt": "2026-05-22T20:27:10.008Z"
+    },
+    "vault-k8s-auth": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/infrastructure/vault-k8s-auth/SKILL.md",
+      "skillFolderHash": "59d9df5a92a5a7ca1958941680d3b85170da0ef9",
+      "installedAt": "2026-05-22T20:27:10.009Z",
+      "updatedAt": "2026-05-22T20:27:10.009Z"
+    },
+    "create-github-issue": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/process/create-github-issue/SKILL.md",
+      "skillFolderHash": "1d1a34dd26bdd47061ce2c6c67bdf6607594d9f3",
+      "installedAt": "2026-05-22T20:27:10.010Z",
+      "updatedAt": "2026-05-22T20:27:10.010Z"
+    },
+    "create-pull-request": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/process/create-pull-request/SKILL.md",
+      "skillFolderHash": "22639f1ce54076884dcea3af55bad85808ada154",
+      "installedAt": "2026-05-22T20:27:10.010Z",
+      "updatedAt": "2026-05-22T20:27:10.010Z"
+    },
+    "generate-standup": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/process/generate-standup/SKILL.md",
+      "skillFolderHash": "0c4c74e503b2ef2513f3946bf0740926e85b91a2",
+      "installedAt": "2026-05-22T20:27:10.011Z",
+      "updatedAt": "2026-05-22T20:27:10.011Z"
+    },
+    "cyclopts-cli-scripts": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/python/cyclopts-cli-scripts/SKILL.md",
+      "skillFolderHash": "2dd1dd56eb9936360eb63cb274f188d930bf491e",
+      "installedAt": "2026-05-22T20:27:10.011Z",
+      "updatedAt": "2026-05-22T20:27:10.011Z"
+    },
+    "uv-python-workflow": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/python/uv-python-workflow/SKILL.md",
+      "skillFolderHash": "b0631f87139d5ae890c57f0e624c8fcc4a5d4d32",
+      "installedAt": "2026-05-22T20:27:10.012Z",
+      "updatedAt": "2026-05-22T20:27:10.012Z"
+    },
+    "creating-skills": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/workflow/creating-skills/SKILL.md",
+      "skillFolderHash": "198e7f592e8bcf7feb28bc1d18e89d81a9cc7479",
+      "installedAt": "2026-05-22T20:27:10.012Z",
+      "updatedAt": "2026-05-22T20:27:10.012Z"
+    },
+    "validate-before-commit": {
+      "source": "mitodl/agent-kit",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mitodl/agent-kit.git",
+      "skillPath": "skills/workflow/validate-before-commit/SKILL.md",
+      "skillFolderHash": "7ee6e7b17802152428a7c42aaa1fe03f22763d8b",
+      "installedAt": "2026-05-22T20:27:10.013Z",
+      "updatedAt": "2026-05-22T20:27:10.013Z"
+    }
+  },
+  "dismissed": {}
+}

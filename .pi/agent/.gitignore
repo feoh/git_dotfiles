@@ -1,0 +1,10 @@
+# Keep Pi runtime state and credentials out of dotfiles.
+*
+
+# Persist only portable agent configuration/code.
+!.gitignore
+!AGENTS.md
+!extensions/
+!extensions/**
+!skills/
+!skills/**
