@@ -1,0 +1,18 @@
+{
+  "settings": {
+    "autoAuth": true
+  },
+  "mcpServers": {
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp",
+      "auth": "oauth",
+      "lifecycle": "lazy"
+    },
+    "todoist": {
+      "command": "npx",
+      "args": ["-y", "@doist/todoist-mcp"],
+      "env": { "TODOIST_API_KEY": "${TODOIST_API_KEY}" },
+      "lifecycle": "lazy"
+    }
+  }
+}
