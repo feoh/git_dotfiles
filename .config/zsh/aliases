@@ -28,6 +28,7 @@ alias psh='poetry shell'
 # Fun :)
 alias ssdf='ssh feoh@sverige.sdf.org'
 alias fsdf='ssh feoh@faeroes.sdf.org'
+alias isca='ssh -t feoh@sxelo tmux attach'
 
 # Mutt mail for MIT!
 alias mitt='mutt -F ~/.config/mutt/mitrc'
