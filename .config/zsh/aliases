@@ -7,10 +7,13 @@ alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
 alias mscp="scp -i ~/.ssh/oldevops.pem"
 alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
+
+# API Key-palooza
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --reveal --fields credential`'
 alias clapi='export CLAUDE_API_KEY=`op item get 'Claude_API_Key' --reveal --fields credential`'
 alias gemapi='export GEMINI_API_KEY=`op item get 'GoogleGeminiAPI' --reveal --fields credential`'
 alias todoistapi='export TODOIST_API_KEY=`op item get 'Todoist_API' --reveal --fields credential`'
+alias trelloapi='export TRELLO_API_KEY=`op item get 'Trello_API' --reveal --fields credential` && export TRELLO_TOKEN=`op item get 'Trello_API' --reveal --fields token`'
 alias pr='poetry run'
 alias psh='poetry shell'
 # ssh with Gloria key
