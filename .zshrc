@@ -1,121 +1,118 @@
-export ZSH="$HOME/.oh-my-zsh"
+# ~/.zshrc — bespoke, no oh-my-zsh.
+# Backup of the previous OMZ-based rc is at ~/.zshrc.omz-backup-YYYYMMDD.
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="robbyrussell"
-ZSH_THEME="fino-time-feoh"
+# ---------- Core zsh options ---------------------------------------------
+autoload -U colors && colors            # $fg, $bg, $reset_color, $terminfo
+autoload -Uz compinit && compinit       # completion system
+setopt prompt_subst                     # allow $(funcs) in PROMPT
+setopt interactive_comments             # allow # comments at the prompt
 
-# Uncomment the following line to enable command auto-correction.
-#ENABLE_CORRECTION="true"
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS \
+       EXTENDED_HISTORY INC_APPEND_HISTORY
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-COMPLETION_WAITING_DOTS="true"
+# Completion polish (the bits OMZ's completion.zsh gave you)
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:warnings'     format ''   # silence "no matches" / "not a git repository"
+zstyle ':completion:*:messages'     format ''   # silence completer info messages (e.g. _git's "not a git repository")
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+# Make `config` (dotfiles bare-repo alias) get git completion without
+# tripping "not a git repository" on the host cwd.
+compdef config=git
 
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git vi-mode virtualenv fzf gh kubectl helm uv aws docker)
+# Vi mode (replaces OMZ vi-mode plugin)
+bindkey -v
+export KEYTIMEOUT=1
 
-# Some like Ubuntu are stupid and afraid of calling fd fd.
-if [[ `whence -p fdfind` ]]; then
-	export FD_COMMAND="fdfind"
+# ---------- Prompt / theme -----------------------------------------------
+source $HOME/.config/zsh/spectrum.zsh
+source $HOME/.config/zsh/git-prompt.zsh
+source $HOME/.config/zsh/themes/fino-time-feoh.zsh-theme
+
+# ---------- Tool integrations (replace OMZ plugins) ----------------------
+# fd binary name differs on Debian/Ubuntu
+if (( ${+commands[fdfind]} )); then
+    export FD_COMMAND="fdfind"
 else
-	export FD_COMMAND="fd"
+    export FD_COMMAND="fd"
 fi
 
-
+# fzf: keybindings + fuzzy completion (replaces omz fzf plugin)
 export FZF_DEFAULT_COMMAND="$FD_COMMAND . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FD_COMMAND -t d . $HOME"
-
-# Stop whining at me and just auto update already oh my zsh! :)
-zstyle ':omz:update' mode auto
-
-if [[ `uname -s` == "NetBSD" ]]; then
-	export FZF_BASE="/usr/pkg/share/fzf"
+if (( ${+commands[fzf]} )); then
+    # fzf >= 0.48 ships its own zsh integration:
+    eval "$(fzf --zsh)" 2>/dev/null || {
+        # Fallback for older fzf installs (Debian/Ubuntu package layout)
+        [[ -r /usr/share/doc/fzf/examples/key-bindings.zsh ]] && \
+            source /usr/share/doc/fzf/examples/key-bindings.zsh
+        [[ -r /usr/share/doc/fzf/examples/completion.zsh ]] && \
+            source /usr/share/doc/fzf/examples/completion.zsh
+    }
 fi
-source $ZSH/oh-my-zsh.sh
 
+# Native completions for the tools whose OMZ plugins were completion-only
+(( ${+commands[gh]} ))      && eval "$(gh completion -s zsh)"
+(( ${+commands[helm]} ))    && source <(helm completion zsh)
+(( ${+commands[uv]} ))      && eval "$(uv generate-shell-completion zsh)"
+(( ${+commands[kubectl]} )) && source <(kubectl completion zsh)
+(( ${+commands[docker]} ))  && {
+    # Docker ships completions; just make sure compinit can find them.
+    fpath+=(/usr/share/zsh/vendor-completions /usr/share/zsh/site-functions)
+}
+# aws v2 completer (replaces omz aws plugin completer)
+if (( ${+commands[aws_completer]} )); then
+    autoload -U +X bashcompinit && bashcompinit
+    complete -C aws_completer aws
+fi
 
+# atuin owns Ctrl-R (must come AFTER fzf so it wins the binding)
+(( ${+commands[atuin]} )) && eval "$(atuin init zsh)"
+
+# ---------- Your aliases & functions -------------------------------------
 source $HOME/.config/zsh/aliases
 source $HOME/.config/zsh/functions
 
-# Created by `pipx` on 2023-02-15 20:39:07
-export PATH="$PATH:$HOME/.local/bin"
+# ---------- PATH & environment -------------------------------------------
+export PATH="$PATH:$HOME/.local/bin"          # pipx
+export PATH="$PATH:$HOME/bin"                 # personal scripts
 
-# Add my rando binaries dir :)
-export PATH="$PATH:$HOME/bin"
-
-# Volta!
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
+[[ -d /snap/bin ]] && export PATH="$PATH:/snap/bin"
+[[ -d $HOME/.pulumi/bin ]] && export PATH="$PATH:$HOME/.pulumi/bin"
 
-# Activate 1password biometric auth
-OP_BIOMETRIC_UNLOCK_ENABLED=true
-if [ -f $HOME/.config/op/plugins.sh ]; then
-	source $HOME/.config/op/plugins.sh
+# 1Password biometric auth + plugins
+export OP_BIOMETRIC_UNLOCK_ENABLED=true
+[[ -f $HOME/.config/op/plugins.sh ]] && source $HOME/.config/op/plugins.sh
+
+# Editor
+if [[ $(uname -s) == "NetBSD" ]]; then
+    export EDITOR=vim VISUAL=vim
+    export FZF_BASE="/usr/pkg/share/fzf"
+else
+    export EDITOR=nvim VISUAL=nvim
 fi
 
-# Neovim 4-evah!
-export EDITOR=nvim
-export VISUAL=nvim
+# AWS defaults
+export AWS_REGION="us-east-1"
+export AWS_DEFAULT_REGION="us-east-1"
 
-# except on NetBSD where vim will have to do :)
-
-if [[ `uname -s` == "NetBSD" ]]; then
-	export EDITOR=vim
-	export VISUAL=vim
+# WSL: shim `op` to the Windows 1Password CLI
+if [[ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]]; then
+    alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
 fi
 
-# When in Rome - add snaps to path if on Ubuntu.
-[[ -d /snap/bin ]] && export PATH=$PATH:/snap/bin
+# luaver
+[[ -s ~/.luaver/luaver ]] && . ~/.luaver/luaver
 
-
-
-# add Pulumi to the PATH if we can't install as a package.
-if [ -d /home/feoh/.pulumi/bin ]; then
-	export PATH=$PATH:/home/feoh/.pulumi/bin
-fi
-
-
-# Make my shell history be EVERYWHERE :)
-if type atuin &>/dev/null
-then
-	eval "$(atuin init zsh)"
-fi
-
-# Stop bugging me about updates. JUST DOO EET!
-export DISABLE_UPDATE_PROMPT=true
-
-# Work schtuff.
-AWS_REGION="us-east-1"
-AWS_DEFAULT_REGION="us-east-1"
-
-# Ungh. The pain. It burns. :) Only alias op to the Windows executable on WSL.
-if [ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]; then
-	alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
-fi
-
-# Todoist API key magic
-# export TODOIST_API_KEY="$(op read 'op://private/Todoist API/credential')"
-
-[ -s ~/.luaver/luaver ] && . ~/.luaver/luaver
-
-
-# OpenClaw Completion
-if [ -d "$HOME/.openclaw" ]; then
-    source "/home/feoh/.openclaw/completions/openclaw.zsh"
-fi
+# OpenClaw completion
+[[ -d $HOME/.openclaw ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
