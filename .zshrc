@@ -114,5 +114,6 @@ fi
 # luaver
 [[ -s ~/.luaver/luaver ]] && . ~/.luaver/luaver
 
-# OpenClaw completion
-[[ -d $HOME/.openclaw ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
+# Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
+# by a short-circuited `&&` on the last line above.
+true

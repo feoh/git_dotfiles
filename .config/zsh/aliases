@@ -1,12 +1,20 @@
 # Universal aliases
 
 alias vcode='code-insiders'
-alias config='git --git-dir=$HOME/.cfg/.git/ --work-tree=$HOME'
 alias v='source .venv/bin/activate || source venv/bin/activate'
+
+# Kitty crud. Should maybe delete these but who knows, I may go back :)
+# Ghostty is keeping me happy these days though!
 alias kssh='TERM=xterm-256color ssh'
 alias mkssh="TERM=xterm-256color ssh -i ~/.ssh/oldevops.pem"
+
+# MIT ssh aliases to use the oldevops key
+alias mssh="ssh -i ~/.ssh/oldevops.pem"
 alias mscp="scp -i ~/.ssh/oldevops.pem"
 alias mrsync="rsync -e ssh -i ~/.ssh/oldevops.pem"
+
+# ssh with Gloria key
+alias gssh='ssh -i ~/.ssh/id_ed25519_chrisgloria'
 
 # API Key-palooza
 alias openai='export OPENAI_API_KEY=`op item get 'OpenAI' --reveal --fields credential`'
@@ -16,15 +24,10 @@ alias todoistapi='export TODOIST_API_KEY=`op item get 'Todoist_API' --reveal --f
 alias trelloapi='export TRELLO_API_KEY=`op item get 'Trello_API' --reveal --fields credential` && export TRELLO_TOKEN=`op item get 'Trello_API' --reveal --fields token`'
 alias pr='poetry run'
 alias psh='poetry shell'
-# ssh with Gloria key
-alias gssh='ssh -i ~/.ssh/id_ed25519_chrisgloria'
 
 # Fun :)
 alias ssdf='ssh feoh@sverige.sdf.org'
 alias fsdf='ssh feoh@faeroes.sdf.org'
-
-# Update mah kickstart.nvim fork in my local dotfiles!
-alias nvpull='config subtree pull --prefix .config/nvim https://github.com/feoh/kickstart.nvim master'
 
 # Mutt mail for MIT!
 alias mitt='mutt -F ~/.config/mutt/mitrc'
@@ -32,27 +35,27 @@ alias mitt='mutt -F ~/.config/mutt/mitrc'
 # tl is already taken by the tmux plugin!
 alias toolong=$HOME/.local/bin/tl
 
-# Remnants from Poetry :)
-alias ov='pushd $HOME/src/mit/ol-infrastructure && source .venv/bin/activate && popd'
-alias pet='ov && nvim .'
-alias pem='ov && nvim __main__.py'
-
 alias cargoupdate='cargo install-update -a'
-alias gsnp='git -c pager.show=false show'
+
 # Unfuck Wayland on WSL2
 alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
+
+# Neovim aliases
 alias nvbuild='make CMAKE_BUILD_TYPE=Release'
+
+# Git-fu
+alias lsha='git show | head -1 | colrm 1 8'
 alias elfilc='nvim $(git show --oneline | head -2 | tail -1 | cut -d " " -f 3 | sed "s/a\///g")'
+alias config='git --git-dir=$HOME/.cfg/.git/ --work-tree=$HOME'
+alias gsnp='git -c pager.show=false show'
 
 # BOW TO YOUR NEW AI OVERLORDS!
 alias copilot='npx -y @github/copilot'
 alias gemini='npx -y @google/gemini-cli'
 
 # software installs
-alias getnvm='url -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash'
 alias ur='uv run'
 
-alias lsha='git show | head -1 | colrm 1 8'
 
 # Random nodejs software I want :)
 alias marp='npx -y @marp-team/marp-cli@latest'
