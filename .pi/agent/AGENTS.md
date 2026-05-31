@@ -1,5 +1,9 @@
 # Global Pi agent instructions
 
+## Personal projects
+
+- Personal projects generally live locally under `~/src/personal` and use GitHub repositories under the GitHub user `feoh`.
+
 ## GitHub issues
 
 - The GitHub CLI (`gh`) is available and should be used for GitHub issue work.
