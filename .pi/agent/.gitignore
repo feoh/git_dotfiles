@@ -4,6 +4,8 @@
 # Persist only portable agent configuration/code.
 !.gitignore
 !AGENTS.md
+!settings.json
+!models.json
 !extensions/
 !extensions/**
 !skills/

@@ -1,0 +1,18 @@
+{
+  "lastChangelogVersion": "0.78.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "medium",
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "git:github.com/apmantza/pi-lens"
+  ],
+  "enabledModels": [
+    "github-copilot/gpt-5.4",
+    "ollama/qwen3-coder:latest",
+    "github-copilot/claude-opus-4.6",
+    "openai-codex/gpt-5.4",
+    "openai-codex/gpt-5.5",
+    "ollama/gemma4:latest"
+  ]
+}
