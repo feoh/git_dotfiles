@@ -2,6 +2,7 @@
 # Backup of the previous OMZ-based rc is at ~/.zshrc.omz-backup-YYYYMMDD.
 
 # ---------- Core zsh options ---------------------------------------------
+set -o vi
 autoload -U colors && colors            # $fg, $bg, $reset_color, $terminfo
 autoload -Uz compinit && compinit       # completion system
 setopt prompt_subst                     # allow $(funcs) in PROMPT
