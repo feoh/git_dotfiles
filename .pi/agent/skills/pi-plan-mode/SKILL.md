@@ -4,9 +4,11 @@ description: >
   Communicate pi's plan-mode controls correctly to the user. Use this skill
   whenever finishing a PLAN FINALIZE phase, when the harness blocks a tool
   call with "Plan mode is active", or when the user asks how to start
-  implementing after a plan. Never invent custom triggers like "type go" or
-  "say continue" — pi has specific built-in controls and the agent cannot
-  exit plan mode from inside a turn.
+  implementing after a plan. Also preserve finalized plans in both
+  `~/.pi/plans/` and, when available, the current project's GitHub-backed
+  repository. Never invent custom triggers like "type go" or "say continue"
+  — pi has specific built-in controls and the agent cannot exit plan mode
+  from inside a turn.
 license: BSD-3-Clause
 metadata:
   category: workflow
@@ -26,6 +28,23 @@ flags them) will be rejected with:
 Additionally, the FINALIZE sub-phase only permits writes to the single
 plan file under `.pi/plans/`. Even creating skills or other files is
 blocked until plan mode is toggled off.
+
+## Plan file persistence
+
+When finalizing a plan:
+
+1. **Always** write the canonical plan file under `~/.pi/plans/` (or the
+   workspace-local `.pi/plans/` path the user requested) during FINALIZE.
+2. If the current project lives in a Git repository that has a GitHub
+   remote, also keep a repo copy at the repository root as `PLAN.md`.
+3. If plan mode restrictions prevent writing `PLAN.md` during FINALIZE,
+   tell the user the canonical plan is saved and create/update the repo
+   copy immediately after plan mode is exited or during the next writable
+   turn.
+4. If no project GitHub repository exists, skip the repo copy.
+
+This means the canonical plan location is still `.pi/plans/...`, while the
+repository copy is a convenience mirror for project-local visibility.
 
 **The agent cannot exit plan mode from inside a turn.** Only the user can
 toggle it, via pi's UI.
@@ -54,6 +73,9 @@ verbatim):
   restrictions.
 - **Do not** attempt to run a write or mutating bash command "just to
   check" — it will be blocked and waste a turn.
+- **Do not** try to write the repository mirror (`PLAN.md`) during FINALIZE
+  if plan mode only permits the `.pi/plans/...` write. Save the canonical
+  plan first, then mirror it in a later writable turn.
 - **Do not** claim a command is read-only to bypass the heuristic. If a
   command is blocked, accept it and surface the blockage to the user.
 

@@ -1,11 +1,12 @@
 {
   "lastChangelogVersion": "0.78.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.4",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
-    "git:github.com/apmantza/pi-lens"
+    "git:github.com/apmantza/pi-lens",
+    "npm:pi-claude-bridge"
   ],
   "enabledModels": [
     "github-copilot/gpt-5.4",
