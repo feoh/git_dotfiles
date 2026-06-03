@@ -4,6 +4,7 @@
  * Provides tools to interact with Trello boards:
  *   - trello_list_lists: List all lists on a board
  *   - trello_list_cards: List cards (optionally filtered by list)
+ *   - trello_find_card: Find a card by exact title and return full details
  *   - trello_get_card: Get full card details
  *   - trello_create_card: Create a new card
  *   - trello_update_card: Update card name, description, or due date
@@ -81,7 +82,7 @@ interface TrelloCard {
   shortUrl: string;
 }
 
-function formatCard(c: TrelloCard, listName?: string): string {
+function formatCardSummary(c: TrelloCard, listName?: string): string {
   const parts = [`• **${c.name}**`];
   if (listName) parts.push(`  List: ${listName}`);
   if (c.desc) parts.push(`  Desc: ${c.desc.slice(0, 120)}${c.desc.length > 120 ? "…" : ""}`);
@@ -90,6 +91,45 @@ function formatCard(c: TrelloCard, listName?: string): string {
   parts.push(`  ID: ${c.id}`);
   parts.push(`  URL: ${c.shortUrl}`);
   return parts.join("\n");
+}
+
+function formatFullCard(c: TrelloCard, listName?: string): string {
+  const parts = [`• **${c.name}**`];
+  if (listName) parts.push(`  List: ${listName}`);
+  if (c.due) parts.push(`  Due: ${c.due}`);
+  if (c.labels.length) parts.push(`  Labels: ${c.labels.map((l) => l.name || l.color).join(", ")}`);
+  if (c.closed) parts.push("  Status: Archived");
+  parts.push(`  ID: ${c.id}`);
+  parts.push(`  URL: ${c.shortUrl}`);
+  parts.push("  Desc:");
+  parts.push(c.desc || "(empty)");
+  return parts.join("\n");
+}
+
+async function getListName(listId: string, signal?: AbortSignal): Promise<string | undefined> {
+  const list = (await trelloFetch(
+    `/lists/${listId}?fields=name`,
+    "GET",
+    undefined,
+    signal
+  )) as Pick<TrelloList, "name">;
+
+  return list.name;
+}
+
+async function findCardByTitle(
+  boardId: string,
+  title: string,
+  signal?: AbortSignal
+): Promise<TrelloCard | undefined> {
+  const cards = (await trelloFetch(
+    `/boards/${boardId}/cards?filter=all&fields=name,desc,idList,due,labels,pos,closed,shortUrl`,
+    "GET",
+    undefined,
+    signal
+  )) as TrelloCard[];
+
+  return cards.find((card) => card.name === title);
 }
 
 // ── Extension ────────────────────────────────────────────────────────
@@ -109,7 +149,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
         Type.String({ description: "Board short ID (default: YgbriLHZ)" })
       ),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { boardId?: string },
+      signal?: AbortSignal
+    ) {
       const board = params.boardId || DEFAULT_BOARD_ID;
       const lists = (await trelloFetch(
         `/boards/${board}/lists?filter=open`,
@@ -146,7 +190,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
         Type.String({ description: "Filter to cards in this list ID" })
       ),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { boardId?: string; listId?: string },
+      signal?: AbortSignal
+    ) {
       const board = params.boardId || DEFAULT_BOARD_ID;
 
       // Fetch lists for name mapping
@@ -176,7 +224,7 @@ export default function trelloExtension(pi: ExtensionAPI) {
       }
 
       const text = cards.length
-        ? cards.map((c) => formatCard(c, listMap.get(c.idList))).join("\n\n")
+        ? cards.map((c) => formatCardSummary(c, listMap.get(c.idList))).join("\n\n")
         : "No cards found.";
 
       return {
@@ -196,17 +244,65 @@ export default function trelloExtension(pi: ExtensionAPI) {
     parameters: Type.Object({
       cardId: Type.String({ description: "Card ID" }),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { cardId: string },
+      signal?: AbortSignal
+    ) {
       const card = (await trelloFetch(
         `/cards/${params.cardId}?fields=name,desc,idList,due,labels,pos,closed,shortUrl`,
         "GET",
         undefined,
         signal
       )) as TrelloCard;
+      const listName = await getListName(card.idList, signal);
 
       return {
-        content: [{ type: "text", text: formatCard(card) }],
-        details: { card },
+        content: [{ type: "text", text: formatFullCard(card, listName) }],
+        details: { card, listName },
+      };
+    },
+  });
+
+  // ── trello_find_card ───────────────────────────────────────────────
+
+  pi.registerTool({
+    name: "trello_find_card",
+    label: "Trello: Find Card",
+    description:
+      "Find a Trello card on a board by exact title and return full details.",
+    promptSnippet: "Find a Trello card by exact title and return full details",
+    parameters: Type.Object({
+      title: Type.String({ description: "Exact Trello card title" }),
+      boardId: Type.Optional(
+        Type.String({ description: "Board short ID (default: YgbriLHZ)" })
+      ),
+    }),
+    async execute(
+      _toolCallId: string,
+      params: { title: string; boardId?: string },
+      signal?: AbortSignal
+    ) {
+      const board = params.boardId || DEFAULT_BOARD_ID;
+      const card = await findCardByTitle(board, params.title, signal);
+
+      if (!card) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `No card found with exact title **${params.title}** on board ${board}.`,
+            },
+          ],
+          details: { boardId: board, title: params.title },
+        };
+      }
+
+      const listName = await getListName(card.idList, signal);
+
+      return {
+        content: [{ type: "text", text: formatFullCard(card, listName) }],
+        details: { card, listName },
       };
     },
   });
@@ -234,7 +330,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
         Type.String({ description: "'top', 'bottom', or a positive number" })
       ),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { listId: string; name: string; desc?: string; due?: string; pos?: string },
+      signal?: AbortSignal
+    ) {
       const body: Record<string, unknown> = {
         idList: params.listId,
         name: params.name,
@@ -275,7 +375,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
         })
       ),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { cardId: string; name?: string; desc?: string; due?: string },
+      signal?: AbortSignal
+    ) {
       const body: Record<string, unknown> = {};
       if (params.name !== undefined) body.name = params.name;
       if (params.desc !== undefined) body.desc = params.desc;
@@ -326,7 +430,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
         Type.String({ description: "'top', 'bottom', or a positive number" })
       ),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { cardId: string; listId: string; pos?: string },
+      signal?: AbortSignal
+    ) {
       const body: Record<string, unknown> = { idList: params.listId };
       if (params.pos) body.pos = params.pos;
 
@@ -359,7 +467,11 @@ export default function trelloExtension(pi: ExtensionAPI) {
     parameters: Type.Object({
       cardId: Type.String({ description: "Card ID to archive" }),
     }),
-    async execute(_toolCallId, params, signal) {
+    async execute(
+      _toolCallId: string,
+      params: { cardId: string },
+      signal?: AbortSignal
+    ) {
       const card = (await trelloFetch(
         `/cards/${params.cardId}`,
         "PUT",
@@ -381,7 +493,9 @@ export default function trelloExtension(pi: ExtensionAPI) {
 
   // ── Startup notification ───────────────────────────────────────────
 
-  pi.on("session_start", async (_event, ctx) => {
+  pi.on(
+    "session_start",
+    async (_event: unknown, ctx: { ui: { notify: (message: string, level?: string) => void } }) => {
     const hasKey = !!process.env.TRELLO_API_KEY;
     const hasToken = !!process.env.TRELLO_TOKEN;
     if (!hasKey || !hasToken) {
