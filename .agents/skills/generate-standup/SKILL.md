@@ -39,7 +39,14 @@ The script outputs a JSON object:
 
 ```json
 {
-  "meta": { "username", "today", "yesterday", "tomorrow", "since" },
+  "meta": {
+    "username": "string",
+    "display_name": "string",
+    "today": "string",
+    "yesterday": "string",
+    "tomorrow": "string",
+    "since": "string"
+  },
   "checkin_discussion": { "id", "number", "title", "url", "createdAt" },
   "prs_authored":    [...],
   "prs_reviewed":    [...],
@@ -48,6 +55,8 @@ The script outputs a JSON object:
 }
 ```
 
+- `meta.display_name` is the GitHub profile name when available; fall back to
+  `meta.username` if it is blank.
 - `meta.yesterday` is the previous weekday (Friday if today is Monday).
 - `meta.tomorrow` is the next weekday (Monday if today is Friday).
 - `meta.since` is midnight UTC on `meta.yesterday` — the fetch window start.
@@ -132,12 +141,17 @@ which date's activity is treated as "done" work:
   "announcements": {
     "type": "string",
     "title": "Announcements",
-    "description": "Anything to announce not in GitHub? (OOO, special review requests, schedule changes, etc.) Leave blank if none."
+    "description": "Anything to announce not in GitHub? (OOO, special review requests, schedule changes, external docs/runbooks to link, etc.) Leave blank if none."
   },
   "off_github": {
     "type": "string",
     "title": "Off-GitHub work",
-    "description": "Meetings, planning, research, design, or other work that won't appear in GitHub. Leave blank if none.\n\nPossible session-only work detected:\n<bullet list of session-only summaries, or 'none detected'>"
+    "description": "Meetings, planning, research, design, talks, incident follow-up, or other work that won't appear in GitHub. Leave blank if none.\n\nPossible session-only work detected:\n<bullet list of session-only summaries, or 'none detected'>"
+  },
+  "extra_context": {
+    "type": "string",
+    "title": "Extra context to preserve",
+    "description": "Any nuance, concerns, caveats, external links, or wording you want carried through into the final post. This is where to capture the human part that raw GitHub activity misses. Leave blank if none."
   }
 }
 ```
@@ -173,15 +187,22 @@ From the user's `timing` answer, determine:
   bullet with context from the session summary — do not create a duplicate.
 - If a session represents work with no GitHub artifact, add it as its own
   bullet under done or planned based on `updated_at` vs `report_date`.
+- Prefer explicit user-provided notes (`announcements`, `off_github`,
+  `extra_context`) over auto-generated summaries when both cover the same work.
+  Use GitHub/session data to fill gaps, not to overwrite the human phrasing.
+- If several items are part of the same theme (for example, reviewing a batch
+  of PRs or continuing a single incident follow-up), grouping them under one
+  parent bullet with sub-bullets is encouraged when it reads more naturally.
 
 ---
 
 ## Step 4 — Render the standup
 
-Use `meta.username` (the GitHub login) as the name.
+Use `meta.display_name` when available; fall back to `meta.username`.
+Prefer the human-readable name over the raw GitHub login.
 
 ```markdown
-<Display Name>
+_<Display Name>_
 
 > Standup announcements
 
@@ -200,19 +221,30 @@ Use `meta.username` (the GitHub login) as the name.
 
 - **Empty sections:** write `- None`, never omit the section header.
 - **Blockers** go in announcements as a bullet; tag with `@handle` and link.
+- **Name line:** prefer a human-friendly display name, commonly wrapped in
+  underscores for italics to match team style.
 - **Links:** raw GitHub URLs are fine; markdown `[text](url)` formatting is
-  also fine — match what feels natural for the content. Don't force one style.
+  also fine — match what feels natural for the content. External links
+  (runbooks, docs, Slack threads, etc.) are welcome when they add context.
 - **Level of detail:** match what the data supports. If a PR/issue title is
   self-explanatory, a bare link is sufficient. Add a brief description only
   when context genuinely helps (e.g., the PR title doesn't convey purpose, or
   the work involved investigation/discussion not captured in a link).
+- **Prefer natural phrasing over templated phrasing:** avoid mechanical bullets
+  like `worked on <url>` when a clearer summary is available. Preserve the
+  user's own wording and concerns wherever possible.
+- **Use nested bullets when helpful:** a parent bullet like `Reviewed a bunch
+  of PRs:` or an issue link followed by indented explanation often reads better
+  than a flat list of disconnected one-liners.
 - **Do not impose narrative style:** some people post links; some post prose;
-  both are correct. Let the available data guide the output.
+  both are correct. Let the available data and the user's notes guide the
+  output.
 - **Do not group PRs** across repos into parent bullets unless the user
   explicitly works across many repos on the same thing and grouping is clearly
-  cleaner — default to separate bullets.
+  cleaner — default to separate bullets. Grouping within a single theme is fine.
 - **Planned section** should reflect what's actually next, not a mechanical
-  list of every open PR. Omit items the user is clearly done with.
+  list of every open PR. Omit items the user is clearly done with, and include
+  forward-looking caveats or goals when the user supplied them.
 
 ---
 
@@ -286,6 +318,30 @@ Tobias Macey
 - Finish fixing the Polars/Iceberg hang in Dagster
 - Test the Concourse release workflow end to end
 - Wrap up self assessment
+```
+
+## Example output (EOD, hand-written narrative style)
+
+```markdown
+_Chris Patti_
+
+> Standup announcements
+
+- [Retrospective on yesterday's XPro Production Certificate Outage](https://pe.ol.mit.edu/runbooks_post_mortems/20260603_xpro_outage/)
+
+> What did I work on today?
+
+- Pycon tech talk!
+- Reviewed a bunch of PRs:
+  - https://github.com/mitodl/ol-infrastructure/pull/4715
+  - https://github.com/mitodl/ol-infrastructure/pull/4713 and a couple more I forgot :)
+- Engaged in a wrestling match with Rootly's post incident retrospective creation tools. Lost, then after getting support from them won - kind of? It's not as clean as I'd like but details from yesterday's incident are documented [here](https://pe.ol.mit.edu/runbooks_post_mortems/20260603_xpro_outage/)
+
+> What am I working on tomorrow?
+
+- https://github.com/mitodl/ol-infrastructure/issues/4702
+  - I'm concerned that the issues Tobias raised around devs having neither the artifacts nor the permissions to run the streamlined EKS credentialing process we wrote is a deal breaker. We talked about potential solutions for a few seconds today, but I was mostly Retrospective-ing from the outage yesterday and didn't really have time to dig much.
+  - I'd like to have our solution either finished, abandoned, or very thoroughly scoped by the end of the week.
 ```
 
 ## Example output (ambiguous timing, hybrid style)
