@@ -1,19 +1,19 @@
 {
-  "lastChangelogVersion": "0.79.1",
+  "lastChangelogVersion": "0.79.3",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-claude-bridge",
     "git:github.com/apmantza/pi-lens"
   ],
   "enabledModels": [
-    "github-copilot/gpt-5.4",
-    "ollama/qwen3-coder:latest",
-    "github-copilot/claude-opus-4.6",
-    "openai-codex/gpt-5.4",
     "openai-codex/gpt-5.5",
-    "ollama/gemma4:latest"
+    "ollama/gemma4:latest",
+    "ollama/qwen3-coder:latest",
+    "claude-bridge/claude-opus-4-8",
+    "claude-bridge/claude-opus-4-7",
+    "claude-bridge/claude-sonnet-4-6"
   ]
 }
