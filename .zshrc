@@ -115,6 +115,10 @@ fi
 # luaver
 [[ -s ~/.luaver/luaver ]] && . ~/.luaver/luaver
 
+# Pi LLM interface 
+# Always write sessions to "$HOME/.pi/sessions"
+export PI_AGENT_SESSIONS_DIR="$HOME/.pi/sessions"
+
 # Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
 # by a short-circuited `&&` on the last line above.
 true

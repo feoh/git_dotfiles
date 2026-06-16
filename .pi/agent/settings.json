@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.3",
+  "lastChangelogVersion": "0.79.4",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
@@ -15,5 +15,6 @@
     "claude-bridge/claude-opus-4-8",
     "claude-bridge/claude-opus-4-7",
     "claude-bridge/claude-sonnet-4-6"
-  ]
+  ],
+  "theme": "dark"
 }

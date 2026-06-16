@@ -1,4 +1,3 @@
-
 export PATH="$PATH:/opt/homebrew/bin"
 if type brew &>/dev/null
 then
@@ -25,3 +24,10 @@ fi
 
 [[ -f "$HOME/.config/zsh/aliases" ]] && source "$HOME/.config/zsh/aliases"
 [[ -f "$HOME/.config/zsh/functions" ]] && source "$HOME/.config/zsh/functions"
+
+# CUDA Linux googe!
+if [ -d "/opt/cuda" ]; then
+	export CUDA_HOME=/opt/cuda
+	export PATH=/opt/cuda/bin:$PATH
+	export LD_LIBRARY_PATH=/opt/cuda/lib64:$LD_LIBRARY_PATH
+fi
