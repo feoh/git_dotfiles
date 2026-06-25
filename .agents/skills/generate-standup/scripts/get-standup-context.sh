@@ -105,7 +105,7 @@ _search_prs() {
 			"$flag" "$USERNAME" \
 			--owner "$org" \
 			--updated ">=${since%T*}" \
-			--json number,title,state,url,updatedAt,isDraft,mergedAt \
+			--json number,title,state,url,updatedAt,isDraft \
 			--limit 50 2>/dev/null || echo "[]"
 	done) | jq -s 'add | unique_by(.url)'
 }

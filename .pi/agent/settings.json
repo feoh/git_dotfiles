@@ -1,12 +1,12 @@
 {
-  "lastChangelogVersion": "0.79.4",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "lastChangelogVersion": "0.80.2",
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-opus-4-7",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
-    "npm:pi-claude-bridge",
-    "git:github.com/apmantza/pi-lens"
+    "git:github.com/apmantza/pi-lens",
+    "npm:pi-claude-bridge"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.5",

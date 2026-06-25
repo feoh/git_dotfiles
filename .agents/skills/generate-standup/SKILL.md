@@ -169,9 +169,9 @@ From the user's `timing` answer, determine:
 
 **Bucketing rules:**
 
-- **Done (past section):** Any PR or issue with `updatedAt` or `mergedAt`
-  on `report_date`. Include both merged and still-open items that were
-  actively worked on that day.
+- **Done (past section):** Any PR or issue with `updatedAt` on
+  `report_date`. Include both merged and still-open items that were
+  actively worked on that day (merged PRs have `state == "merged"`).
 - **Planned (future section):** Open PRs and issues the user is continuing,
   plus anything explicitly stated in user answers. Omit items with no
   `updatedAt` since `meta.since` (stale).
