@@ -88,7 +88,7 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 export OP_BIOMETRIC_UNLOCK_ENABLED=true
 [[ -f $HOME/.config/op/plugins.sh ]] && source $HOME/.config/op/plugins.sh
 
-# Editor
+# For SDF NetBSD systems
 if [[ $(uname -s) == "NetBSD" ]]; then
     export EDITOR=vim VISUAL=vim
     export FZF_BASE="/usr/pkg/share/fzf"
@@ -99,11 +99,6 @@ fi
 # AWS defaults
 export AWS_REGION="us-east-1"
 export AWS_DEFAULT_REGION="us-east-1"
-
-# WSL: shim `op` to the Windows 1Password CLI
-if [[ -f /mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe ]]; then
-    alias op='/mnt/c/Users/feoh/AppData/Local/Microsoft/WinGet/Packages/AgileBits.1Password.CLI_Microsoft.Winget.Source_8wekyb3d8bbwe/op.exe'
-fi
 
 # luaver
 [[ -s ~/.luaver/luaver ]] && . ~/.luaver/luaver
