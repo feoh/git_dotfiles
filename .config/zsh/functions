@@ -1,3 +1,52 @@
+_feoh_setup_fzf() {
+  (( ${+commands[fzf]} )) || return 0
+
+  local fzf_zsh
+  local fzf_key_bindings_loaded
+  local fzf_completion_loaded
+  local fzf_shell_dir
+  local -a fzf_shell_dirs
+
+  # fzf >= 0.48 ships its own zsh integration. Capture it first so older
+  # fzf releases that do not understand --zsh actually fall through here;
+  # `eval "$(fzf --zsh)" || ...` can otherwise eval an empty string and
+  # report success.
+  if fzf_zsh="$(fzf --zsh 2>/dev/null)"; then
+    eval "$fzf_zsh"
+    return $?
+  fi
+
+  # Older packaged fzf installs ship standalone shell scripts instead.
+  # Try the common Linux, Homebrew, pkgsrc/NetBSD, and manual-install paths.
+  fzf_shell_dirs=(
+    "$HOME/.fzf/shell"
+    /usr/share/fzf/shell
+    /usr/share/fzf
+    /usr/share/doc/fzf/examples
+    /usr/local/share/fzf/shell
+    /usr/local/share/fzf
+    /usr/local/opt/fzf/shell
+    /opt/homebrew/opt/fzf/shell
+    /usr/pkg/share/fzf/shell
+    /usr/pkg/share/fzf
+    /usr/pkg/share/examples/fzf
+  )
+  [[ -n ${FZF_BASE:-} ]] && fzf_shell_dirs=("$FZF_BASE/shell" "$FZF_BASE" "${fzf_shell_dirs[@]}")
+
+  for fzf_shell_dir in "${fzf_shell_dirs[@]}"; do
+    [[ -n "$fzf_shell_dir" ]] || continue
+    if [[ -z "$fzf_key_bindings_loaded" && -r "$fzf_shell_dir/key-bindings.zsh" ]]; then
+      source "$fzf_shell_dir/key-bindings.zsh"
+      fzf_key_bindings_loaded=1
+    fi
+    if [[ -z "$fzf_completion_loaded" && -r "$fzf_shell_dir/completion.zsh" ]]; then
+      source "$fzf_shell_dir/completion.zsh"
+      fzf_completion_loaded=1
+    fi
+    [[ -n "$fzf_key_bindings_loaded" && -n "$fzf_completion_loaded" ]] && break
+  done
+}
+
 q() {
   local url="$1"
   local question="$2"

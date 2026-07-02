@@ -36,6 +36,9 @@ source $HOME/.config/zsh/spectrum.zsh
 source $HOME/.config/zsh/git-prompt.zsh
 source $HOME/.config/zsh/themes/fino-time-feoh.zsh-theme
 
+# ---------- Shell functions ---------------------------------------------
+source $HOME/.config/zsh/functions
+
 # ---------- Tool integrations (replace OMZ plugins) ----------------------
 # fd binary name differs on Debian/Ubuntu
 if (( ${+commands[fdfind]} )); then
@@ -48,16 +51,7 @@ fi
 export FZF_DEFAULT_COMMAND="$FD_COMMAND . $HOME"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="$FD_COMMAND -t d . $HOME"
-if (( ${+commands[fzf]} )); then
-    # fzf >= 0.48 ships its own zsh integration:
-    eval "$(fzf --zsh)" 2>/dev/null || {
-        # Fallback for older fzf installs (Debian/Ubuntu package layout)
-        [[ -r /usr/share/doc/fzf/examples/key-bindings.zsh ]] && \
-            source /usr/share/doc/fzf/examples/key-bindings.zsh
-        [[ -r /usr/share/doc/fzf/examples/completion.zsh ]] && \
-            source /usr/share/doc/fzf/examples/completion.zsh
-    }
-fi
+_feoh_setup_fzf
 
 # Native completions for the tools whose OMZ plugins were completion-only
 (( ${+commands[gh]} ))      && eval "$(gh completion -s zsh)"
@@ -77,9 +71,8 @@ fi
 # atuin owns Ctrl-R (must come AFTER fzf so it wins the binding)
 (( ${+commands[atuin]} )) && eval "$(atuin init zsh)"
 
-# ---------- Your aliases & functions -------------------------------------
+# ---------- Your aliases -------------------------------------------------
 source $HOME/.config/zsh/aliases
-source $HOME/.config/zsh/functions
 
 # ---------- PATH & environment -------------------------------------------
 export PATH="$PATH:$HOME/.local/bin"          # pipx
