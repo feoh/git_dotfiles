@@ -6,15 +6,17 @@
   "packages": [
     "npm:pi-mcp-adapter",
     "git:github.com/apmantza/pi-lens",
-    "npm:pi-claude-bridge"
+    "npm:pi-claude-bridge",
+    "npm:@tintinweb/pi-subagents"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "ollama/gemma4:latest",
-    "ollama/qwen3-coder:latest",
     "claude-bridge/claude-opus-4-8",
-    "claude-bridge/claude-opus-4-7",
-    "claude-bridge/claude-sonnet-4-6"
+    "claude-bridge/claude-fable-5",
+    "claude-bridge/claude-sonnet-5",
+    "ollama/qwen3.6:latest",
+    "openai-codex/gpt-5.4"
   ],
   "theme": "dark"
 }

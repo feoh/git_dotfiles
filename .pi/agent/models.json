@@ -10,7 +10,14 @@
       },
       "models": [
         { "id": "gemma4:latest" },
-        { "id": "qwen3-coder:latest" }
+        { "id": "qwen3-coder:latest" },
+        {
+          "id": "qwen3.6:latest",
+          "name": "Qwen 3.6 (Ollama)",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144
+        }
       ]
     }
   }
