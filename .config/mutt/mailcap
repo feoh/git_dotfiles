@@ -1,0 +1,17 @@
+# Per-user mailcap entries for mutt.
+# Keep this before the system mailcap so mutt uses these terminal-friendly
+# handlers instead of /etc/mailcap's xdg-open entry for text/html.
+
+# Explicitly viewing an HTML part opens it in the desktop browser when a GUI is
+# available.  Mutt deletes its own temp file as soon as the mailcap command
+# returns, so mutt-open-html first copies it to a persistent cache location.
+# The copiousoutput pandoc entry below is what mutt uses for pager autoview.
+text/html; ~/.local/bin/mutt-open-html %s; test=test -n "$DISPLAY$WAYLAND_DISPLAY"; nametemplate=%s.html
+text/html; pandoc --from=html --to=markdown --wrap=auto %s; copiousoutput; nametemplate=%s.html
+application/xhtml+xml; ~/.local/bin/mutt-open-html %s; test=test -n "$DISPLAY$WAYLAND_DISPLAY"; nametemplate=%s.html
+application/xhtml+xml; pandoc --from=html --to=markdown --wrap=auto %s; copiousoutput; nametemplate=%s.html
+
+# Image attachments: display inline in Ghostty via the Kitty graphics protocol
+# using ~/.local/bin/ghostty-imgcat.  The script falls back to img2sixel or
+# xdg-open outside Ghostty.
+image/*; ~/.local/bin/ghostty-imgcat %s; needsterminal
