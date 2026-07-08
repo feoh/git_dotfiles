@@ -1,0 +1,9 @@
+# MIME/HTML viewing support.
+# Prefer a real text part when messages provide one, but render HTML-only
+# messages inside mutt's pager via the text/html mailcap entry below.
+alternative_order multipart/mixed multipart/related text/plain
+auto_view text/html application/xhtml+xml
+
+# Put the per-user mailcap first so text/html is rendered as terminal-friendly
+# text instead of falling through to system handlers such as xdg-open.
+set mailcap_path = "~/.config/mutt/mailcap:~/.mailcap:/usr/share/mutt/mailcap:/etc/mutt/mailcap:/etc/mailcap:/usr/etc/mailcap:/usr/local/etc/mailcap"
