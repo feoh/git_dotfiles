@@ -97,3 +97,56 @@ qv() {
   # Use llm with the fetched content as a system prompt
   llm prompt "$question" -s "$system"
 }
+
+gbclean() {
+  local editor=${EDITOR:-vi}
+  local tmpfile
+  tmpfile=$(mktemp /tmp/git-branches.XXXXXX) || return 1
+
+  local current_branch
+  current_branch=$(git symbolic-ref --short HEAD 2>/dev/null) || {
+    echo "gbclean: not a git repository" >&2
+    rm -f "$tmpfile"
+    return 1
+  }
+
+  local -a original
+  original=("${(@f)$(git branch --format='%(refname:short)' | grep -Fxv "$current_branch")}")
+
+  {
+    printf '%s\n' "${original[@]}"
+    echo "# Currently on: $current_branch (hidden here, cannot be deleted this way)"
+    echo "# Delete a line below to delete that branch. Save & quit to apply."
+  } > "$tmpfile"
+
+  ${=editor} "$tmpfile"
+
+  local -a remaining
+  remaining=("${(@f)$(grep -v '^#' "$tmpfile" | grep -v '^[[:space:]]*$')}")
+  rm -f "$tmpfile"
+
+  local branch
+  local -a to_delete
+  for branch in "${original[@]}"; do
+    [[ -z "$branch" ]] && continue
+    (( ${remaining[(Ie)$branch]} )) || to_delete+=("$branch")
+  done
+
+  if (( ${#to_delete} == 0 )); then
+    echo "gbclean: no branches to delete"
+    return 0
+  fi
+
+  echo "gbclean: deleting ${#to_delete} branch(es): ${to_delete[*]}"
+  local -a failed
+  for branch in "${to_delete[@]}"; do
+    git branch -d "$branch" 2>/dev/null || failed+=("$branch")
+  done
+
+  if (( ${#failed} > 0 )); then
+    echo "gbclean: not fully merged, force delete? ${failed[*]}"
+    local REPLY
+    read "REPLY?[y/N] "
+    [[ "$REPLY" == [yY] ]] && git branch -D "${failed[@]}"
+  fi
+}

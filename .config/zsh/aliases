@@ -49,6 +49,7 @@ alias lsha='git show | head -1 | colrm 1 8'
 alias elfilc='nvim $(git show --oneline | head -2 | tail -1 | cut -d " " -f 3 | sed "s/a\///g")'
 alias config='git --git-dir=$HOME/.cfg/.git/ --work-tree=$HOME'
 alias gsnp='git -c pager.show=false show'
+alias gprune='git branch --merged $(git rev-parse --verify main >/dev/null 2>&1 && echo main || echo master) | grep -vE "^\*|^\s*(main|master)$" | xargs -r git branch -d'
 
 # BOW TO YOUR NEW AI OVERLORDS!
 alias copilot='npx -y @github/copilot'

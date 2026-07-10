@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.80.3",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "lastChangelogVersion": "0.80.6",
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-sonnet-5",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
