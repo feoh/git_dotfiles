@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.80.6",
+  "lastChangelogVersion": "0.80.7",
   "defaultProvider": "claude-bridge",
   "defaultModel": "claude-sonnet-5",
   "defaultThinkingLevel": "high",
@@ -16,7 +16,10 @@
     "claude-bridge/claude-fable-5",
     "claude-bridge/claude-sonnet-5",
     "ollama/qwen3.6:latest",
-    "openai-codex/gpt-5.4"
+    "openai-codex/gpt-5.4",
+    "openai-codex/gpt-5.6-luna",
+    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.6-terra"
   ],
   "theme": "dark"
 }
