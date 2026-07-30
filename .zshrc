@@ -5,6 +5,7 @@
 set -o vi
 autoload -U colors && colors            # $fg, $bg, $reset_color, $terminfo
 autoload -Uz compinit && compinit       # completion system
+[[ -r "$HOME/.config/zsh/pi-completion.zsh" ]] && source "$HOME/.config/zsh/pi-completion.zsh"
 setopt prompt_subst                     # allow $(funcs) in PROMPT
 setopt interactive_comments             # allow # comments at the prompt
 

@@ -1,13 +1,13 @@
 {
-  "lastChangelogVersion": "0.80.7",
-  "defaultProvider": "claude-bridge",
-  "defaultModel": "claude-sonnet-5",
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "git:github.com/apmantza/pi-lens",
     "npm:pi-claude-bridge",
-    "npm:@tintinweb/pi-subagents"
+    "npm:pi-ask-user"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.5",
