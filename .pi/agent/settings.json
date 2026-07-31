@@ -7,7 +7,8 @@
     "npm:pi-mcp-adapter",
     "git:github.com/apmantza/pi-lens",
     "npm:pi-claude-bridge",
-    "npm:pi-ask-user"
+    "npm:pi-ask-user",
+    "npm:@ff-labs/pi-fff"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.5",
