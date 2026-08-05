@@ -30,8 +30,6 @@
   autoSetupRemote = true
   # Push tags along with branches
   followTags = true
-  # Push to matching named branches
-  default = matching
 
 [fetch]
   # Remove remote-tracking branches that no longer exist

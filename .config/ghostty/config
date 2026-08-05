@@ -1,5 +1,5 @@
 font-family = FiraCode Nerd Font Mono
-font-size = 22
+font-size = 16
 cursor-style-blink = true
 cursor-style = block
 shell-integration-features = no-cursor,sudo,title,ssh-env,no-ssh-terminfo,path
