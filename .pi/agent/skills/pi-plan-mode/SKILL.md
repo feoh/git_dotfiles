@@ -1,89 +1,95 @@
 ---
 name: pi-plan-mode
 description: >
-  Communicate pi's plan-mode controls correctly to the user. Use this skill
-  whenever finishing a PLAN FINALIZE phase, when the harness blocks a tool
-  call with "Plan mode is active", or when the user asks how to start
-  implementing after a plan. Also preserve finalized plans in both
-  `~/.pi/plans/` and, when available, the current project's GitHub-backed
-  repository. Never invent custom triggers like "type go" or "say continue"
-  — pi has specific built-in controls and the agent cannot exit plan mode
-  from inside a turn.
+  Communicate the custom /plan and /planmode extension's controls correctly.
+  Use whenever finishing a PLAN FINALIZE phase, when plan mode blocks a tool,
+  or when the user asks how to finalize, exit, or implement after planning.
+  Never describe /plan as a toggle or invent an unregistered shortcut.
 license: BSD-3-Clause
 metadata:
   category: workflow
 ---
 
-# Pi Plan Mode — Correct User Instructions
+# Custom Pi Plan Mode — Correct User Instructions
 
-Pi's plan mode is provided by the built-in `plan-mode` extension. It
-restricts the agent to read-only tools and a bash allowlist. While plan
-mode is active, any write/edit call and most mutating bash commands
-(including innocuous-looking ones like `node --version` if the heuristic
-flags them) will be rejected with:
+The active plan mode is the custom extension at
+`~/.pi/agent/extensions/plan-mode.ts`, not pi's bundled example extension.
+The bundled example has different controls and must not be used as the source
+of truth.
 
-> Plan mode is active: this command appears to mutate the filesystem,
-> packages, or external state. Use read-only commands only.
+## Actual lifecycle and controls
 
-Additionally, the FINALIZE sub-phase only permits writes to the single
-plan file under `.pi/plans/`. Even creating skills or other files is
-blocked until plan mode is toggled off.
+- `/plan <task>` starts a one-shot planning conversation. It does **not**
+  toggle an active plan mode off. Without a task, it only shows usage help.
+- `/planmode on` starts persistent planning across user turns.
+- `/finalize [slug]` transitions from brainstorm to finalize and permits the
+  agent to write one generated file under the current working directory's
+  `.pi/plans/` directory. It does **not** exit plan mode.
+- `/execute [additional instructions]` is available after `/finalize` has set
+  the current plan path. It exits plan mode and immediately asks the agent to
+  implement that finalized plan.
+- `/planmode off` exits plan mode without starting implementation. It works in
+  either brainstorm or finalize phase.
+- `/planmode status` reports whether mode is off, one-shot, or persistent and
+  whether the phase is brainstorm or finalize.
+- This custom extension registers no plan-mode keyboard shortcut and shows no
+  automatic "Execute the plan" selection prompt.
 
-## Plan file persistence
-
-When finalizing a plan:
-
-1. **Always** write the canonical plan file under `~/.pi/plans/` (or the
-   workspace-local `.pi/plans/` path the user requested) during FINALIZE.
-2. If the current project lives in a Git repository that has a GitHub
-   remote, also keep a repo copy at the repository root as `PLAN.md`.
-3. If plan mode restrictions prevent writing `PLAN.md` during FINALIZE,
-   tell the user the canonical plan is saved and create/update the repo
-   copy immediately after plan mode is exited or during the next writable
-   turn.
-4. If no project GitHub repository exists, skip the repo copy.
-
-This means the canonical plan location is still `.pi/plans/...`, while the
-repository copy is a convenience mirror for project-local visibility.
-
-**The agent cannot exit plan mode from inside a turn.** Only the user can
-toggle it, via pi's UI.
+The extension also clears its in-memory plan state during session shutdown,
+but `/reload`, session replacement, and quitting are lifecycle side effects,
+not controls that should be recommended as ways to exit plan mode.
 
 ## What to tell the user
 
-When you have just finalized a plan, or when a tool call is blocked by
-plan mode, tell the user *exactly* this (adapt wording, keep the controls
-verbatim):
+After finalizing a plan, say:
 
-> To start implementing, exit plan mode using one of:
+> The plan is saved, and plan mode is still active.
 >
-> - `/plan` — slash command to toggle plan mode off
-> - `Ctrl+Alt+P` — keybinding for the same toggle
-> - If pi shows an "Execute the plan" prompt after the `Plan:` block,
->   selecting that option also exits plan mode
+> - Run `/execute` to exit plan mode and start implementing the finalized plan.
+> - Run `/planmode off` to exit plan mode without implementing it.
+
+When a write or mutating command is blocked during brainstorm, say:
+
+> Plan mode is active.
 >
-> Once the status bar no longer shows PLAN, re-issue your request and
-> I'll proceed.
+> - Run `/finalize` to write the agreed plan; this keeps plan mode active.
+> - Run `/planmode off` to exit without finalizing.
 
-## What NOT to do
+Keep the slash commands verbatim. The agent cannot invoke an interactive slash
+command on the user's behalf.
 
-- **Do not** tell the user to "type go", "say continue", "reply yes", or
-  any other free-text trigger. None of these do anything in pi; they only
-  produce another user turn that is still subject to plan-mode
+## Plan file behavior
+
+`/finalize [slug]` creates a timestamped plan path of the form:
+
+```text
+.pi/plans/YYYYMMDD-HHMM-<slug>.md
+```
+
+The path is relative to the pi process's current working directory. During the
+finalize phase, only that exact plan file may be written with `write` or
+`edit`; other file modifications remain blocked. The extension does not
+automatically create or maintain a repository-root `PLAN.md` mirror.
+
+## What not to say
+
+- Do not say `/plan` toggles or exits plan mode.
+- Do not mention `Ctrl+Alt+P` or any other plan-mode shortcut.
+- Do not claim that `/finalize` exits plan mode.
+- Do not claim that pi will show an automatic "Execute the plan" prompt.
+- Do not tell the user to type "go", "continue", "yes", or another free-text
+  trigger to exit. Free text starts another agent turn under the same plan-mode
   restrictions.
-- **Do not** attempt to run a write or mutating bash command "just to
-  check" — it will be blocked and waste a turn.
-- **Do not** try to write the repository mirror (`PLAN.md`) during FINALIZE
-  if plan mode only permits the `.pi/plans/...` write. Save the canonical
-  plan first, then mirror it in a later writable turn.
-- **Do not** claim a command is read-only to bypass the heuristic. If a
-  command is blocked, accept it and surface the blockage to the user.
+- Do not recommend `/reload`, `/new`, `/resume`, or quitting as an exit method,
+  even though session shutdown currently clears the extension's in-memory
+  state.
 
 ## Reference
 
-The plan-mode extension lives at:
-`/home/feoh/.volta/tools/image/packages/@earendil-works/pi-coding-agent/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/plan-mode/README.md`
+Source of truth:
+`/home/feoh/.pi/agent/extensions/plan-mode.ts`
 
-It documents the toggles (`/plan`, `Ctrl+Alt+P`), the read-only tool set
-(read, bash, grep, find, ls, question), and the bash allowlist. Consult
-it if the user reports unexpected blocking behavior.
+Pi's bundled example at
+`examples/extensions/plan-mode/` intentionally uses different controls
+(`/plan`, `Ctrl+Alt+P`, and an automatic execution picker). Do not copy its
+instructions into responses about this custom extension.

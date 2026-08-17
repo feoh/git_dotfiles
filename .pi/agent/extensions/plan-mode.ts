@@ -23,6 +23,13 @@ Rules:
   proposals at a time, not an essay.
 - If the user's intent is already crystal clear, you may say so and suggest
   they run /finalize.
+
+Plan-mode controls (describe these exactly if the user asks):
+- /finalize writes the agreed plan and keeps plan mode active.
+- After finalization, /execute exits plan mode and starts implementing that plan.
+- /planmode off exits plan mode without starting implementation.
+- /plan starts a one-shot planning task; it does not toggle plan mode off.
+- No keyboard shortcut is registered by this custom extension.
 `;
 
 const FINALIZE_PROMPT_TEMPLATE = (path: string) => `
@@ -52,274 +59,277 @@ Base the contents strictly on what you and the user actually discussed. Do not
 invent new requirements. If something is genuinely unresolved, list it under
 Risks & unknowns rather than guessing.
 
-After writing the file, reply with just the path and a one-line summary, then
-stop. Do not start implementing.
+After writing the file, reply with the path and a one-line summary. Then tell
+the user that plan mode is still active and give the two real next actions:
+- Run /execute to exit plan mode and start implementing this finalized plan.
+- Run /planmode off to exit plan mode without implementing it.
+Do not claim that /finalize exits plan mode, that /plan is a toggle, or that a
+keyboard shortcut exists. Stop without implementing.
 `;
 
 // Patterns that indicate filesystem/state mutation.
 const MUTATING_BASH_PATTERNS = [
-  /(?:^|[;&|])\s*[^|]*\s+>{1,2}\s/,
-  /(?:^|[;&|])\s*[^|]*\s+>{1,2}$/m,
-  /(?:^|[;&|]\s*)(?:rm|rmdir|mv|cp|mkdir|mktemp|touch|chmod|chown|chgrp|ln|install|truncate|dd|shred|mknod)\b/,
-  /(?:^|[;&|]\s*)(?:tee)\b/,
-  /(?:^|[;&|]\s*)git\s+(?:commit|push|pull|fetch|checkout|switch|merge|rebase|reset|clean|stash|add|rm|init|clone|tag\s+-[adfs])\b/,
-  /(?:^|[;&|]\s*)(?:npm|yarn|pnpm|pip|pip3|uv|conda|poetry|pdm|pipx)\s+(?:install|add|remove|uninstall|update|upgrade|create|init|run|exec|build|publish)\b/,
-  /(?:^|[;&|]\s*)(?:make|cmake|cargo\s+build|cargo\s+run|go\s+build|go\s+run|go\s+install|mvn|gradle)\b/,
-  /(?:^|[;&|]\s*)(?:sudo|su)\b/,
-  /(?:^|[;&|]\s*)(?:docker|podman)\s+(?:run|build|push|exec|rm|stop|kill|create|compose)\b/,
-  /(?:^|[;&|]\s*)(?:kubectl|helm|terraform|pulumi|ansible)\s+(?:apply|delete|destroy|create|run|up|down)\b/,
-  /(?:^|[;&|]\s*)(?:apt|apt-get|brew|dnf|yum|pacman|apk|snap|flatpak)\s+(?:install|remove|update|upgrade|purge)\b/,
-  /(?:^|[;&|]\s*)(?:systemctl|service|launchctl)\s+(?:start|stop|restart|enable|disable)\b/,
-  /(?:^|[;&|]\s*)(?:curl|wget)\s.*\|\s*(?:bash|sh|zsh)\b/,
-  /(?:^|[;&|]\s*)(?:eval)\b/,
+	/(?:^|[;&|])\s*[^|]*\s+>{1,2}\s/,
+	/(?:^|[;&|])\s*[^|]*\s+>{1,2}$/m,
+	/(?:^|[;&|]\s*)(?:rm|rmdir|mv|cp|mkdir|mktemp|touch|chmod|chown|chgrp|ln|install|truncate|dd|shred|mknod)\b/,
+	/(?:^|[;&|]\s*)(?:tee)\b/,
+	/(?:^|[;&|]\s*)git\s+(?:commit|push|pull|fetch|checkout|switch|merge|rebase|reset|clean|stash|add|rm|init|clone|tag\s+-[adfs])\b/,
+	/(?:^|[;&|]\s*)(?:npm|yarn|pnpm|pip|pip3|uv|conda|poetry|pdm|pipx)\s+(?:install|add|remove|uninstall|update|upgrade|create|init|run|exec|build|publish)\b/,
+	/(?:^|[;&|]\s*)(?:make|cmake|cargo\s+build|cargo\s+run|go\s+build|go\s+run|go\s+install|mvn|gradle)\b/,
+	/(?:^|[;&|]\s*)(?:sudo|su)\b/,
+	/(?:^|[;&|]\s*)(?:docker|podman)\s+(?:run|build|push|exec|rm|stop|kill|create|compose)\b/,
+	/(?:^|[;&|]\s*)(?:kubectl|helm|terraform|pulumi|ansible)\s+(?:apply|delete|destroy|create|run|up|down)\b/,
+	/(?:^|[;&|]\s*)(?:apt|apt-get|brew|dnf|yum|pacman|apk|snap|flatpak)\s+(?:install|remove|update|upgrade|purge)\b/,
+	/(?:^|[;&|]\s*)(?:systemctl|service|launchctl)\s+(?:start|stop|restart|enable|disable)\b/,
+	/(?:^|[;&|]\s*)(?:curl|wget)\s.*\|\s*(?:bash|sh|zsh)\b/,
+	/(?:^|[;&|]\s*)(?:eval)\b/,
 ];
 
 function isMutatingBash(command: string): boolean {
-  const normalized = command.trim();
-  if (!normalized) return false;
-  if (/`/.test(normalized)) return true;
-  return MUTATING_BASH_PATTERNS.some((pattern) => pattern.test(normalized));
+	const normalized = command.trim();
+	if (!normalized) return false;
+	if (/`/.test(normalized)) return true;
+	return MUTATING_BASH_PATTERNS.some((pattern) => pattern.test(normalized));
 }
 
 function slugify(input: string): string {
-  const cleaned = input
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 50);
-  return cleaned || "plan";
+	const cleaned = input
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
+		.slice(0, 50);
+	return cleaned || "plan";
 }
 
 function timestamp(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return (
-    `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
-    `-${pad(d.getHours())}${pad(d.getMinutes())}`
-  );
+	const d = new Date();
+	const pad = (n: number) => String(n).padStart(2, "0");
+	return (
+		`${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+		`-${pad(d.getHours())}${pad(d.getMinutes())}`
+	);
 }
 
 export default function planModeExtension(pi: ExtensionAPI) {
-  let oneShotPlanMode = false;
-  let persistentPlanMode = false;
-  let phase: "brainstorm" | "finalize" = "brainstorm";
-  let currentPlanPath: string | null = null;
+	let oneShotPlanMode = false;
+	let persistentPlanMode = false;
+	let phase: "brainstorm" | "finalize" = "brainstorm";
+	let currentPlanPath: string | null = null;
 
-  const isPlanModeActive = () => oneShotPlanMode || persistentPlanMode;
+	const isPlanModeActive = () => oneShotPlanMode || persistentPlanMode;
 
-  const statusLabel = () => {
-    if (!isPlanModeActive()) return undefined;
-    if (phase === "finalize") return "plan: finalizing";
-    return persistentPlanMode ? "plan: brainstorm" : "plan: one-shot";
-  };
+	const statusLabel = () => {
+		if (!isPlanModeActive()) return undefined;
+		if (phase === "finalize") return "plan: finalizing";
+		return persistentPlanMode ? "plan: brainstorm" : "plan: one-shot";
+	};
 
-  const refreshStatus = (ctx: {
-    ui?: { setStatus?: (key: string, value?: string) => void };
-  }) => {
-    ctx.ui?.setStatus?.("plan-mode", statusLabel());
-  };
+	const refreshStatus = (ctx: {
+		ui?: { setStatus?: (key: string, value?: string) => void };
+	}) => {
+		ctx.ui?.setStatus?.("plan-mode", statusLabel());
+	};
 
-  const resetToBrainstorm = () => {
-    phase = "brainstorm";
-    currentPlanPath = null;
-  };
+	const resetToBrainstorm = () => {
+		phase = "brainstorm";
+		currentPlanPath = null;
+	};
 
-  pi.registerCommand("plan", {
-    description: "One-shot plan with read-only inspection. Usage: /plan <task>",
-    handler: async (args, ctx) => {
-      const task = args.trim();
-      if (!task) {
-        ctx.ui.notify(
-          "Usage: /plan <task>. For a persistent brainstorm session, use /planmode on.",
-          "warning",
-        );
-        return;
-      }
+	pi.registerCommand("plan", {
+		description: "One-shot plan with read-only inspection. Usage: /plan <task>",
+		handler: async (args, ctx) => {
+			const task = args.trim();
+			if (!task) {
+				ctx.ui.notify(
+					"Usage: /plan <task>. For a persistent brainstorm session, use /planmode on.",
+					"warning",
+				);
+				return;
+			}
 
-      oneShotPlanMode = true;
-      phase = "brainstorm";
-      refreshStatus(ctx);
-      ctx.ui.notify(
-        "Plan mode (one-shot) enabled. Brainstorm with me, then run /finalize to write the plan.",
-        "info",
-      );
-      pi.sendUserMessage(task);
-    },
-  });
+			oneShotPlanMode = true;
+			phase = "brainstorm";
+			refreshStatus(ctx);
+			ctx.ui.notify(
+				"Plan mode (one-shot) enabled. Brainstorm, run /finalize to write the plan, then /execute to exit plan mode and implement it. Use /planmode off to cancel.",
+				"info",
+			);
+			pi.sendUserMessage(task);
+		},
+	});
 
-  pi.registerCommand("planmode", {
-    description: "Toggle persistent plan mode. Usage: /planmode on|off|status",
-    handler: async (args, ctx) => {
-      const value = args.trim().toLowerCase();
+	pi.registerCommand("planmode", {
+		description: "Control persistent plan mode. Usage: /planmode on|off|status",
+		handler: async (args, ctx) => {
+			const value = args.trim().toLowerCase();
 
-      if (value === "on") {
-        persistentPlanMode = true;
-        phase = "brainstorm";
-        refreshStatus(ctx);
-        ctx.ui.notify(
-          "Persistent plan mode is on (brainstorm phase). Use /finalize to lock in a plan, /execute to run it, or /planmode off to cancel.",
-          "info",
-        );
-        return;
-      }
+			if (value === "on") {
+				persistentPlanMode = true;
+				phase = "brainstorm";
+				refreshStatus(ctx);
+				ctx.ui.notify(
+					"Persistent plan mode is on (brainstorm phase). Use /finalize to lock in a plan (plan mode stays on), then /execute to exit and run it. Use /planmode off to cancel.",
+					"info",
+				);
+				return;
+			}
 
-      if (value === "off") {
-        persistentPlanMode = false;
-        oneShotPlanMode = false;
-        resetToBrainstorm();
-        refreshStatus(ctx);
-        ctx.ui.notify("Plan mode is off.", "info");
-        return;
-      }
+			if (value === "off") {
+				persistentPlanMode = false;
+				oneShotPlanMode = false;
+				resetToBrainstorm();
+				refreshStatus(ctx);
+				ctx.ui.notify("Plan mode is off.", "info");
+				return;
+			}
 
-      if (value === "" || value === "status") {
-        const label = !isPlanModeActive()
-          ? "off"
-          : `${persistentPlanMode ? "persistent" : "one-shot"} / ${phase}` +
-            (currentPlanPath ? ` → ${currentPlanPath}` : "");
-        ctx.ui.notify(`Plan mode status: ${label}.`, "info");
-        return;
-      }
+			if (value === "" || value === "status") {
+				let label = "off";
+				if (isPlanModeActive()) {
+					const mode = persistentPlanMode ? "persistent" : "one-shot";
+					label = `${mode} / ${phase}`;
+					if (currentPlanPath) label += ` → ${currentPlanPath}`;
+				}
+				ctx.ui.notify(`Plan mode status: ${label}.`, "info");
+				return;
+			}
 
-      ctx.ui.notify("Usage: /planmode on|off|status", "warning");
-    },
-  });
+			ctx.ui.notify("Usage: /planmode on|off|status", "warning");
+		},
+	});
 
-  pi.registerCommand("finalize", {
-    description:
-      "Write the brainstormed plan to a Markdown file. Usage: /finalize [slug]",
-    handler: async (args, ctx) => {
-      if (!isPlanModeActive()) {
-        ctx.ui.notify(
-          "Plan mode is not active. Start with /planmode on or /plan <task>.",
-          "warning",
-        );
-        return;
-      }
+	pi.registerCommand("finalize", {
+		description:
+			"Write the brainstormed plan to a Markdown file. Usage: /finalize [slug]",
+		handler: async (args, ctx) => {
+			if (!isPlanModeActive()) {
+				ctx.ui.notify(
+					"Plan mode is not active. Start with /planmode on or /plan <task>.",
+					"warning",
+				);
+				return;
+			}
 
-      const slug = slugify(args.trim());
-      const dir = resolve(process.cwd(), ".pi", "plans");
-      try {
-        mkdirSync(dir, { recursive: true });
-      } catch (err) {
-        ctx.ui.notify(
-          `Could not create ${dir}: ${(err as Error).message}`,
-          "error",
-        );
-        return;
-      }
+			const slug = slugify(args.trim());
+			const dir = resolve(process.cwd(), ".pi", "plans");
+			try {
+				mkdirSync(dir, { recursive: true });
+			} catch (err) {
+				ctx.ui.notify(
+					`Could not create ${dir}: ${(err as Error).message}`,
+					"error",
+				);
+				return;
+			}
 
-      const path = `.pi/plans/${timestamp()}-${slug}.md`;
-      currentPlanPath = path;
-      phase = "finalize";
-      refreshStatus(ctx);
-      ctx.ui.notify(
-        `Finalizing plan → ${path}. Only that file may be written.`,
-        "info",
-      );
-      pi.sendUserMessage(
-        `Finalize the plan we discussed. Write it to ${path} following the FINALIZE phase instructions.`,
-      );
-    },
-  });
+			const path = `.pi/plans/${timestamp()}-${slug}.md`;
+			currentPlanPath = path;
+			phase = "finalize";
+			refreshStatus(ctx);
+			ctx.ui.notify(
+				`Finalizing plan → ${path}. Only that file may be written; plan mode remains active until /execute or /planmode off.`,
+				"info",
+			);
+			pi.sendUserMessage(
+				`Finalize the plan we discussed. Write it to ${path} following the FINALIZE phase instructions.`,
+			);
+		},
+	});
 
-  pi.registerCommand("execute", {
-    description:
-      "Exit plan mode and execute the most recently finalized plan file.",
-    handler: async (args, ctx) => {
-      if (!currentPlanPath) {
-        ctx.ui.notify(
-          "No finalized plan to execute. Run /finalize first.",
-          "warning",
-        );
-        return;
-      }
+	pi.registerCommand("execute", {
+		description:
+			"Exit plan mode and execute the most recently finalized plan file.",
+		handler: async (args, ctx) => {
+			if (!currentPlanPath) {
+				ctx.ui.notify(
+					"No finalized plan to execute. Run /finalize first.",
+					"warning",
+				);
+				return;
+			}
 
-      const path = currentPlanPath;
-      persistentPlanMode = false;
-      oneShotPlanMode = false;
-      resetToBrainstorm();
-      refreshStatus(ctx);
-      ctx.ui.notify(
-        `Plan mode off. Executing plan: ${path}`,
-        "info",
-      );
-      const extra = args.trim();
-      pi.sendUserMessage(
-        `Execute the implementation plan in ${path}. Read the file first, then work through the Ordered steps in order. Pause for confirmation between major steps, and run the Validation section when done.${extra ? `\n\nAdditional instructions: ${extra}` : ""}`,
-      );
-    },
-  });
+			const path = currentPlanPath;
+			persistentPlanMode = false;
+			oneShotPlanMode = false;
+			resetToBrainstorm();
+			refreshStatus(ctx);
+			ctx.ui.notify(`Plan mode off. Executing plan: ${path}`, "info");
+			const extra = args.trim();
+			pi.sendUserMessage(
+				`Execute the implementation plan in ${path}. Read the file first, then work through the Ordered steps in order. Pause for confirmation between major steps, and run the Validation section when done.${extra ? `\n\nAdditional instructions: ${extra}` : ""}`,
+			);
+		},
+	});
 
-  pi.on("session_start", async (_event, ctx) => {
-    refreshStatus(ctx);
-  });
+	pi.on("session_start", async (_event, ctx) => {
+		refreshStatus(ctx);
+	});
 
-  pi.on("before_agent_start", async (event, ctx) => {
-    if (!isPlanModeActive()) return;
+	pi.on("before_agent_start", async (event, ctx) => {
+		if (!isPlanModeActive()) return;
 
-    if (phase === "finalize" && currentPlanPath) {
-      ctx.ui.setWorkingMessage("Writing finalized plan…");
-      return {
-        systemPrompt: `${event.systemPrompt}\n\n${FINALIZE_PROMPT_TEMPLATE(currentPlanPath)}`,
-      };
-    }
+		if (phase === "finalize" && currentPlanPath) {
+			ctx.ui.setWorkingMessage("Writing finalized plan…");
+			return {
+				systemPrompt: `${event.systemPrompt}\n\n${FINALIZE_PROMPT_TEMPLATE(currentPlanPath)}`,
+			};
+		}
 
-    ctx.ui.setWorkingMessage("Brainstorming (read-only)…");
-    return {
-      systemPrompt: `${event.systemPrompt}\n\n${BRAINSTORM_PROMPT}`,
-    };
-  });
+		ctx.ui.setWorkingMessage("Brainstorming (read-only)…");
+		return {
+			systemPrompt: `${event.systemPrompt}\n\n${BRAINSTORM_PROMPT}`,
+		};
+	});
 
-  pi.on("tool_call", async (event) => {
-    if (!isPlanModeActive()) return;
+	pi.on("tool_call", async (event) => {
+		if (!isPlanModeActive()) return;
 
-    if (event.toolName === "write" || event.toolName === "edit") {
-      if (phase === "finalize" && currentPlanPath) {
-        const input = event.input as { path?: unknown };
-        const target = typeof input.path === "string" ? input.path : "";
-        const targetAbs = resolve(process.cwd(), target);
-        const allowedAbs = resolve(process.cwd(), currentPlanPath);
-        if (targetAbs === allowedAbs) {
-          return;
-        }
-        return {
-          block: true,
-          reason: `Plan mode (finalize): only ${currentPlanPath} may be written. Refused write to ${target || "<missing path>"}.`,
-        };
-      }
-      return {
-        block: true,
-        reason:
-          "Plan mode (brainstorm): file modification tools are blocked. Use /finalize to write the plan, or /planmode off to exit.",
-      };
-    }
+		if (event.toolName === "write" || event.toolName === "edit") {
+			if (phase === "finalize" && currentPlanPath) {
+				const input = event.input as { path?: unknown };
+				const target = typeof input.path === "string" ? input.path : "";
+				const targetAbs = resolve(process.cwd(), target);
+				const allowedAbs = resolve(process.cwd(), currentPlanPath);
+				if (targetAbs === allowedAbs) {
+					return;
+				}
+				return {
+					block: true,
+					reason: `Plan mode (finalize): only ${currentPlanPath} may be written. Refused write to ${target || "<missing path>"}.`,
+				};
+			}
+			return {
+				block: true,
+				reason:
+					"Plan mode (brainstorm): file modification tools are blocked. Use /finalize to write the plan, or /planmode off to exit.",
+			};
+		}
 
-    if (event.toolName === "bash") {
-      const input = event.input as { command?: unknown };
-      const command = typeof input.command === "string" ? input.command : "";
-      if (isMutatingBash(command)) {
-        return {
-          block: true,
-          reason:
-            "Plan mode is active: this command appears to mutate the filesystem, packages, or external state. Use read-only commands only.",
-        };
-      }
-    }
-  });
+		if (event.toolName === "bash") {
+			const input = event.input as { command?: unknown };
+			const command = typeof input.command === "string" ? input.command : "";
+			if (isMutatingBash(command)) {
+				return {
+					block: true,
+					reason:
+						"Plan mode is active: this command appears to mutate the filesystem, packages, or external state. Use read-only commands only.",
+				};
+			}
+		}
+	});
 
-  pi.on("agent_end", async (_event, ctx) => {
-    if (oneShotPlanMode && phase === "brainstorm") {
-      // One-shot stays armed until the user either /finalize's or /planmode off's,
-      // so a single brainstorm turn doesn't silently drop guardrails.
-    }
-    ctx.ui.setWorkingMessage();
-    refreshStatus(ctx);
-  });
+	pi.on("agent_end", async (_event, ctx) => {
+		if (oneShotPlanMode && phase === "brainstorm") {
+			// One-shot stays armed until the user either /finalize's or /planmode off's,
+			// so a single brainstorm turn doesn't silently drop guardrails.
+		}
+		ctx.ui.setWorkingMessage();
+		refreshStatus(ctx);
+	});
 
-  pi.on("session_shutdown", async () => {
-    oneShotPlanMode = false;
-    persistentPlanMode = false;
-    resetToBrainstorm();
-  });
+	pi.on("session_shutdown", async () => {
+		oneShotPlanMode = false;
+		persistentPlanMode = false;
+		resetToBrainstorm();
+	});
 }

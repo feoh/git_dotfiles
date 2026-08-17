@@ -150,3 +150,65 @@ gbclean() {
     [[ "$REPLY" == [yY] ]] && git branch -D "${failed[@]}"
   fi
 }
+
+# Resolve the op:// refs in the agent env file into a 0600 file on tmpfs, which
+# clears on reboot. op inject wants {{ }} template syntax, op run does not, so
+# the sed rewraps the bare refs.
+agent-op-refresh() {
+  local env_file="${AGENT_OP_ENV_FILE:-$HOME/.config/op/agent.env}"
+  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-/run/user/${UID}}/agent-op.env}"
+  local tmp="${cache}.$$"
+
+  if [[ ! -r "$env_file" ]]; then
+    print -u2 "agent-op-refresh: cannot read $env_file"
+    return 1
+  fi
+
+  if sed -E 's#=(op://[^[:space:]]+)#={{ \1 }}#' "$env_file" \
+       | op inject --out-file "$tmp" --force >/dev/null \
+     && [[ -s "$tmp" ]] && ! grep -q 'op://' "$tmp"; then
+    mv -f "$tmp" "$cache"
+  else
+    rm -f "$tmp"
+    return 1
+  fi
+}
+
+# Launch coding agents with 1Password-resolved API credentials in their env, so
+# MCP servers and extensions inherit them at spawn time (a shell alias can't
+# reach the agent process). Set AGENT_NO_OP=1 to skip 1Password entirely.
+_agent_with_op() {
+  local bin="$1"; shift
+  local env_file="${AGENT_OP_ENV_FILE:-$HOME/.config/op/agent.env}"
+  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-/run/user/${UID}}/agent-op.env}"
+  local line
+
+  if [[ -n "$AGENT_NO_OP" || ! -r "$env_file" ]]; then
+    command "$bin" "$@"
+    return
+  fi
+
+  # op authenticates through the desktop app, whose approval prompt only renders
+  # on the local GUI session; over SSH it blocks forever. Remote sessions reuse
+  # the cache a local session left behind instead of calling op at all.
+  if [[ -z "$SSH_CONNECTION" ]]; then
+    agent-op-refresh || print -u2 "${bin}: 1Password refresh failed; falling back to cache"
+  fi
+
+  if [[ ! -r "$cache" ]]; then
+    print -u2 "${bin}: no credential cache at $cache; run agent-op-refresh from a local session"
+    command "$bin" "$@"
+    return
+  fi
+
+  (
+    while IFS= read -r line; do
+      [[ -z "$line" || "$line" == '#'* ]] && continue
+      export "$line"
+    done < "$cache"
+    command "$bin" "$@"
+  )
+}
+
+pi() { _agent_with_op pi "$@" }
+claude() { _agent_with_op claude "$@" }

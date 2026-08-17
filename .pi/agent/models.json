@@ -9,14 +9,12 @@
         "supportsReasoningEffort": false
       },
       "models": [
-        { "id": "gemma4:latest" },
-        { "id": "qwen3-coder:latest" },
         {
-          "id": "qwen3.6:latest",
-          "name": "Qwen 3.6 (Ollama)",
+          "id": "gemma4:latest",
+          "name": "Gemma 4 8B (Ollama)",
           "reasoning": true,
           "input": ["text", "image"],
-          "contextWindow": 262144
+          "contextWindow": 131072
         }
       ]
     }
