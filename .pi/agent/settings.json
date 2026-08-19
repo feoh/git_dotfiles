@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.84.2",
   "defaultProvider": "claude-bridge",
   "defaultModel": "claude-opus-5",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-claude-bridge",
