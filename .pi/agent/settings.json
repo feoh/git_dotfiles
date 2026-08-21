@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.84.2",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-luna",
-  "defaultThinkingLevel": "xhigh",
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-opus-5",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-claude-bridge",

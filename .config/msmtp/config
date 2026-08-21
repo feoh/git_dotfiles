@@ -1,25 +1,26 @@
-account default
+defaults
+auth on
+tls on
+tls_starttls on
+
 account feoh@feoh.org
 host smtp.fastmail.com
 port 465
+tls_starttls off
 from feoh@feoh.org
 user feoh@fastmail.com
 passwordeval "op item get wq3hulaszvi3qhcmtrvixzmoiu --reveal --field password"
+logfile ~/.local/state/msmtp/msmtp.log
 
-auth on
-tls on
-tls_trust_file	/etc/ssl/cert.pem
-logfile /Users/cpatti/.local/state/msmtp/msmtp.log
-tls_starttls off
-
-account cpatti@mit.eduj
+# Office 365 SMTP is unusable here: the MIT tenant has
+# SmtpClientAuthentication disabled, so both XOAUTH2 and LOGIN return 535.
+account cpatti@mit.edu
 host outgoing.mit.edu
 port 587
 from cpatti@mit.edu
 user cpatti
-passwordeval ""
-auth on
-tls on
-tls_trust_file	/etc/ssl/cert.pem
-logfile /Users/cpatti/.local/state/msmtp/mit_msmtp.log
-tls_starttls on
+auth login
+passwordeval "op item get s2fi2wbaq7hlhpdiku4szaxsjm --reveal --field password"
+logfile ~/.local/state/msmtp/mit_msmtp.log
+
+account default : feoh@feoh.org

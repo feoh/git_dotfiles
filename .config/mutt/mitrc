@@ -1,11 +1,6 @@
-# use program "pass" to handle and decrypt passwords
-# set my_pass="`pass cpatti@mit.edu`"
-set my_pass="`op item get s2fi2wbaq7hlhpdiku4szaxsjm --reveal --field password`"
 set imap_user = "cpatti@mit.edu"
-set imap_pass = $my_pass
 
-set smtp_pass=$my_pass
-
+# Outbound mail is piped to msmtp, so mutt's own SMTP settings are unused.
 set sendmail="msmtp"
 set use_from=yes
 
@@ -20,11 +15,8 @@ set spoolfile = "+INBOX"
 set move = no
 
 # Oauth2 hoo-ha
-# /home/feoh/.local/bin/mutt-oauth2
 set imap_authenticators="oauthbearer:xoauth2"
-set imap_oauth_refresh_command="/home/feoh/.local/bin/mutt-oauth2"
-set smtp_authenticators=${imap_authenticators}
-set smtp_oauth_refresh_command=${imap_oauth_refresh_command}
+set imap_oauth_refresh_command="$HOME/.local/bin/mutt-oauth2"
 set sort = 'threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
