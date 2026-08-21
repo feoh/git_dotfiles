@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.84.2",
-  "defaultProvider": "claude-bridge",
-  "defaultModel": "claude-opus-5",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-luna",
   "defaultThinkingLevel": "xhigh",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -22,5 +22,10 @@
     "openai-codex/gpt-5.6-terra",
     "claude-bridge/claude-opus-5"
   ],
-  "theme": "dark"
+  "theme": "dark",
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 20000,
+    "keepRecentTokens": 16000
+  }
 }
