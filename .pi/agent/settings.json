@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.2",
+  "lastChangelogVersion": "0.84.3",
   "defaultProvider": "claude-bridge",
   "defaultModel": "claude-opus-5",
   "defaultThinkingLevel": "high",
@@ -11,12 +11,9 @@
     "npm:pi-subagents"
   ],
   "enabledModels": [
-    "openai-codex/gpt-5.5",
     "ollama/gemma4:latest",
-    "claude-bridge/claude-opus-4-8",
     "claude-bridge/claude-fable-5",
     "claude-bridge/claude-sonnet-5",
-    "openai-codex/gpt-5.4",
     "openai-codex/gpt-5.6-luna",
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",

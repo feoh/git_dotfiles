@@ -8,8 +8,9 @@
  *  - edit / write      : incrementally re-index the edited file after the
  *                        tool runs.
  *  - before_agent_start: report whether the code graph is indexed (file
- *                        count, last-updated) or still being built, with a
- *                        nudge toward code_* tools over grep.
+ *                        count, last-updated) or still being built, plus
+ *                        cross-repo coverage and the ToolSearch +
+ *                        code_find_definition calls to make against it.
  *  - session_shutdown  : opportunistically compact the current repo's store
  *                        and the shared cross-repo bridge store (throttled;
  *                        see witan_code.maintenance) — no session-id

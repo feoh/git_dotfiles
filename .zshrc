@@ -108,6 +108,9 @@ export AWS_DEFAULT_REGION="us-east-1"
 # Always write sessions to "$HOME/.pi/sessions"
 export PI_AGENT_SESSIONS_DIR="$HOME/.pi/sessions"
 
+# Don't warn me about pointless things, fff :)
+export FFF_WARN_HOME_SCAN=0
+
 # Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
 # by a short-circuited `&&` on the last line above.
 true
