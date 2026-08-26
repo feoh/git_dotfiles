@@ -6,9 +6,9 @@
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-claude-bridge",
-    "npm:pi-ask-user",
-    "npm:@ff-labs/pi-fff@nightly",
-    "npm:pi-subagents"
+    "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",
+    "npm:pi-subagents",
+    "npm:@juicesharp/rpiv-ask-user-question"
   ],
   "enabledModels": [
     "ollama/gemma4:latest",
