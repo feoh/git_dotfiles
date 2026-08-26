@@ -1,33 +1,90 @@
-set my_pass="`op item get wq3hulaszvi3qhcmtrvixzmoiu --reveal --field password`"
-set imap_user = "feoh@fastmail.com"
-set imap_pass=$my_pass
+# Fastmail (personal). MIT lives in ~/.config/mutt/mitrc -- use `mutt -F` for that.
+#
+# Mutt loads only the first config it finds, in this order:
+#   ~/.muttrc, ~/.mutt/muttrc, ~/.config/mutt/muttrc
+# Creating either of the first two silently shadows this entire file.
 
-#set sendmail="/opt/homebrew/bin/msmtp"
-set sendmail="msmtp"
-set use_from=yes
+# VARIABLES
+set my_server = imap.fastmail.com
+set my_user = feoh@fastmail.com
+# 1Password item "FastmailMutt", referenced by id so a rename can't break it.
+set my_pass = `op item get wq3hulaszvi3qhcmtrvixzmoiu --reveal --field password`
 
-set envelope_from=yes
 set from = "feoh@feoh.org"
 set realname = "Chris Patti"
 
-set folder = "imaps://imap.fastmail.com:993"
+# IMAP SETTINGS
+set imap_user = $my_user
+set imap_pass = $my_pass
+set folder = "imaps://$my_server/"
+set mbox = "+INBOX"
+set postponed = "+Drafts"
+set record = "+Sent Items"
 set spoolfile = "+INBOX"
-set postponed = "+[Gmail]/Drafts"
-
-set header_cache = ~/.mutt/cache/headers
-set message_cachedir = ~/.mutt/cache/bodies
-set certificate_file = ~/.mutt/certificates
-
+set trash = "+Trash"
+set ssl_force_tls = yes
+set imap_check_subscribed
 set move = no
 
+# SMTP SETTINGS
+# Delivery goes through msmtp, which picks its account from the envelope
+# sender. Do not set smtp_url here: it silently overrides sendmail, and
+# mutt's builtin SMTP can't authenticate on macOS, whose system libsasl2
+# ships no PLAIN/LOGIN plugin ("No authenticators available").
+# Unqualified so it resolves via PATH on both macOS and Linux.
+set sendmail = "msmtp"
+set use_from = yes
+set envelope_from = yes
+
+# CACHES
+set header_cache = ~/.cache/mutt/headers
+set message_cachedir = ~/.cache/mutt/bodies
+set certificate_file = ~/.config/mutt/certificates
+
+# UI
 set sort = 'threads'
 set sort_aux = 'last-date-received'
-set imap_check_subscribed
-
-set editor='nvim'
+set editor = 'nvim'
 
 source ~/.config/mutt/mime.rc
 
 # Open URLs in emails
 macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+
+# Catputtin for mutt
+
+color normal		  default default         # Text is "Text"
+color index		    color2 default ~N       # New Messages are Green
+color index		    color1 default ~F       # Flagged messages are Red
+color index		    color13 default ~T      # Tagged Messages are Red
+color index		    color1 default ~D       # Messages to delete are Red
+color attachment	color5 default          # Attachments are Pink
+color signature	  color8 default          # Signatures are Surface 2
+color search		  color4 default          # Highlighted results are Blue
+
+color indicator		default color8          # currently highlighted message Surface 2=Background Text=Foreground
+color error		    color1 default          # error messages are Red
+color status		  color15 default         # status line "Subtext 0"
+color tree        color15 default         # thread tree arrows Subtext 0
+color tilde       color15 default         # blank line padding Subtext 0
+
+color hdrdefault  color13 default         # default headers Pink
+color header		  color13 default "^From:"
+color header	 	  color13 default "^Subject:"
+
+color quoted		  color15 default         # Subtext 0
+color quoted1		  color7 default          # Subtext 1
+color quoted2		  color8 default          # Surface 2
+color quoted3		  color0 default          # Surface 1
+color quoted4		  color0 default
+color quoted5		  color0 default
+
+color body		color2 default		[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+               # email addresses Green
+color body	  color2 default		(https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+        # URLs Green
+color body		color4 default		(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$) # *bold* text Blue
+color body		color4 default		(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)     # _underlined_ text Blue
+color body		color4 default		(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)     # /italic/ text Blue
+
+color sidebar_flagged   color1 default    # Mailboxes with flagged mails are Red
+color sidebar_new       color10 default   # Mailboxes with new mail are Green

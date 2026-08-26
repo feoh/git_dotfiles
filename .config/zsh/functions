@@ -151,12 +151,12 @@ gbclean() {
   fi
 }
 
-# Resolve the op:// refs in the agent env file into a 0600 file on tmpfs, which
-# clears on reboot. op inject wants {{ }} template syntax, op run does not, so
-# the sed rewraps the bare refs.
+# Resolve the op:// refs in the agent env file into a 0600 file under
+# XDG_RUNTIME_DIR, or $TMPDIR on macOS, so it clears on reboot. op inject wants
+# {{ }} template syntax, op run does not, so the sed rewraps the bare refs.
 agent-op-refresh() {
   local env_file="${AGENT_OP_ENV_FILE:-$HOME/.config/op/agent.env}"
-  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-/run/user/${UID}}/agent-op.env}"
+  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-${TMPDIR%/}}/agent-op.env}"
   local tmp="${cache}.$$"
 
   if [[ ! -r "$env_file" ]]; then
@@ -180,7 +180,7 @@ agent-op-refresh() {
 _agent_with_op() {
   local bin="$1"; shift
   local env_file="${AGENT_OP_ENV_FILE:-$HOME/.config/op/agent.env}"
-  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-/run/user/${UID}}/agent-op.env}"
+  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-${TMPDIR%/}}/agent-op.env}"
   local line
 
   if [[ -n "$AGENT_NO_OP" || ! -r "$env_file" ]]; then

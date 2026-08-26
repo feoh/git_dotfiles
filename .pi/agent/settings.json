@@ -7,7 +7,7 @@
     "npm:pi-mcp-adapter",
     "npm:pi-claude-bridge",
     "npm:pi-ask-user",
-    "npm:@ff-labs/pi-fff",
+    "npm:@ff-labs/pi-fff@nightly",
     "npm:pi-subagents"
   ],
   "enabledModels": [
