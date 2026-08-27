@@ -196,3 +196,5 @@
   rc = rebase --continue
   pr = pull-request
   smc = log --author=\"Chris Patti\" --grep=\"$1\"
+[credential "https://git.heroku.com"]
+	helper = !heroku git:credentials
