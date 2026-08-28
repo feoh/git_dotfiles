@@ -52,39 +52,51 @@ source ~/.config/mutt/mime.rc
 macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 
-# Catputtin for mutt
+# Catppuccin Mocha for Mutt. These use the ANSI palette supplied by the
+# Catppuccin Mocha Ghostty theme, rather than xterm's default colors.
 
-color normal		  default default         # Text is "Text"
-color index		    color2 default ~N       # New Messages are Green
-color index		    color1 default ~F       # Flagged messages are Red
-color index		    color13 default ~T      # Tagged Messages are Red
-color index		    color1 default ~D       # Messages to delete are Red
-color attachment	color5 default          # Attachments are Pink
-color signature	  color8 default          # Signatures are Surface 2
-color search		  color4 default          # Highlighted results are Blue
+color normal      default default         # Text on Base
 
-color indicator		default color8          # currently highlighted message Surface 2=Background Text=Foreground
-color error		    color1 default          # error messages are Red
-color status		  color15 default         # status line "Subtext 0"
-color tree        color15 default         # thread tree arrows Subtext 0
-color tilde       color15 default         # blank line padding Subtext 0
+# Index. ~U includes both new (N) and old-unread (O) messages; ~N only
+# colored the handful of newly delivered messages in the original theme.
+color index       color2 default ~U       # Unread: Green
+color index       color1 default ~F       # Flagged: Red
+color index       color5 default ~T       # Tagged: Pink
+color index       color1 default ~D       # Deleted: Red
+color indicator   default color8          # Selected row: Text on Surface 2
+color tree        color15 default         # Thread tree: Subtext 1
 
-color hdrdefault  color13 default         # default headers Pink
-color header		  color13 default "^From:"
-color header	 	  color13 default "^Subject:"
+# General UI. Giving status and search a background keeps them from looking
+# like ordinary message text.
+color status      default color8          # Status bar: Text on Surface 2
+color search      color0 color11          # Search match: Surface 1 on Yellow
+color error       color1 default          # Errors: Red
+color message     color2 default          # Informational messages: Green
+color prompt      color5 default          # Prompts: Pink
+color markers     color1 default          # Pager continuation markers: Red
+color tilde       color8 default          # Blank-line padding: Surface 2
+color attachment  color5 default          # Attachments: Pink
+color signature   color8 default          # Signatures: Surface 2
+color bold        color4 default          # Rendered bold: Blue
+color underline   color4 default          # Rendered underline: Blue
 
-color quoted		  color15 default         # Subtext 0
-color quoted1		  color7 default          # Subtext 1
-color quoted2		  color8 default          # Surface 2
-color quoted3		  color0 default          # Surface 1
-color quoted4		  color0 default
-color quoted5		  color0 default
+# Headers and quoted text.
+color hdrdefault  color7 default          # Headers: Subtext 0
+color header      color5 default "^From:"
+color header      color5 default "^Subject:"
+color quoted      color15 default         # Subtext 1
+color quoted1     color7 default          # Subtext 0
+color quoted2     color8 default          # Surface 2
+color quoted3     color0 default          # Surface 1
+color quoted4     color0 default
+color quoted5     color0 default
 
-color body		color2 default		[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+               # email addresses Green
-color body	  color2 default		(https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+        # URLs Green
-color body		color4 default		(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$) # *bold* text Blue
-color body		color4 default		(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)     # _underlined_ text Blue
-color body		color4 default		(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)     # /italic/ text Blue
+# Message-body highlights.
+color body color6 default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+               # Email addresses: Teal
+color body color4 default (https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+        # URLs: Blue
+color body color4 default (^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$) # *bold*: Blue
+color body color4 default (^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)     # _underline_: Blue
+color body color4 default (^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)     # /italic/: Blue
 
-color sidebar_flagged   color1 default    # Mailboxes with flagged mails are Red
-color sidebar_new       color10 default   # Mailboxes with new mail are Green
+color sidebar_flagged color1 default      # Flagged mailbox: Red
+color sidebar_new     color2 default      # Mailbox with unread mail: Green
