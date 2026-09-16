@@ -1,0 +1,99 @@
+# witan configuration.
+#
+# Every setting below is optional, shown commented-out at its current
+# default. Uncomment and edit to override. Resolution order (highest to
+# lowest precedence): environment variable > this file > built-in default.
+# See mcp/servers/witan/README.md and docs/write-path-scanning.md for the
+# full reference.
+
+# Attribution written to every graph node you create.
+# Env: WITAN_AUTHOR (falls back to `git config user.name`, then $USER).
+# author = "Your Name"
+
+# Graph store location: a local path, s3://, or http:// URI.
+# Env: WITAN_MEMORY_URI (default: ~/.local/share/witan/graph.omni)
+# Fallback for repos matching no [targets.*] block. Points at the personal
+# S3 store so unmatched writes never land back in a local or pre-split graph.
+# Run Witan through ~/.local/bin/witan-route-exec so personal S3 commands get
+# personal credentials while work/HTTP/local targets keep their own context.
+server = "s3://personal-witan/graph.omni"
+
+# Bearer token, required only for an http:// server.
+# Env: WITAN_MEMORY_TOKEN
+# token = "..."
+
+# Default coding agent CLI for `witan run`: claude | pi | copilot | opencode | kilo
+# Env: WITAN_AGENT
+agent = "pi"
+
+# Default --model passed to the agent by `witan run`.
+# Env: WITAN_MODEL
+model = "claude-opus-5"
+
+# ── Named targets ────────────────────────────────────────────────────────────
+# Route different repos/orgs at different stores (e.g. work vs. personal).
+# The first target whose match_repos/match_hosts/match_orgs matches the
+# current repo wins; see the `load()` docstring in witan/config.py for the
+# full precedence rules.
+#
+# [targets.work]
+# server = "http://witan.internal:8080"
+# token = "..."
+# author = "Your Name <you@corp.com>"
+# agent = "claude"
+# match_orgs = ["myorg"]
+#
+# [targets.personal]
+# server = "~/.local/share/witan-personal/graph.omni"
+# match_repos = ["github.com/you/dotfiles"]
+
+# ── [rank] — memory search re-ranking ───────────────────────────────────────
+# Ranking is always on; these are tuning knobs, not a feature flag. Set every
+# w_* to 0 to reproduce the raw BM25 order.
+[rank]
+# w_bm25 = 1.0
+# w_recency = 0.3
+# w_corrob = 0.2
+# w_conf = 0.2
+# half_life_days = 90.0
+# default_confidence = 0.6
+# penalty_superseded = 1.0
+# penalty_contradicted = 0.25
+# w_hop = 0.5
+
+# ── [scan] — write-path secret/PII scanning (ADR 0001) ──────────────────────
+# Enabled by default (opt-out) — set enabled = false below to turn it off.
+# See docs/write-path-scanning.md for the full guide and `witan scan rules`
+# to see what's active.
+[scan]
+# enabled = true
+# secret_action = "block"       # block | redact | warn
+# pii_action = "redact"       # block | redact | warn
+# enabled_detectors = []       # empty = every registered detector is active
+# disabled_detectors = []      # detector names to turn off; wins over enabled_detectors
+# plugins = []                 # dotted "module:Attr" paths to extra scanners
+# allowlist = []               # regexes matched against a finding's own span; downgrades to audit-only
+# allowlist_hashes = []        # salted sha256(allowlist_salt + span) digests of approved values
+# allowlist_salt = ""          # required for allowlist_hashes to take effect
+# on_scanner_error = "block"       # block | warn
+
+# Per-repo overrides (admin-owned; deliberately no WITAN_SCAN_* env-var form —
+# ADR 0001 amendment 2026-07-09). Any ScanConfig field except `overlay` itself.
+# [scan.overlay."github.com/example/legacy-repo"]
+# secret_action = "warn"        # rolling out scanning on a noisy repo first
+
+[targets.production]
+remote_url = "https://witan.ol.mit.edu/mcp"
+oidc_issuer = "https://sso.ol.mit.edu/realms/ol-platform-engineering"
+oidc_audience = "witan"
+match_paths = ["~/src/mit"]
+match_orgs = ["mitodl", "openedx"]
+code_transport = "mcp"
+
+[targets.personal]
+server = "s3://personal-witan/graph.omni"
+match_orgs = ["feoh", "nokse22", "katelouie", "support-in-need"]
+match_paths = ["~/src/personal"]
+
+[targets.work]
+server = "~/.local/share/witan-work/graph.omni"
