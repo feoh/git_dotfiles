@@ -1,0 +1,27 @@
+#!/bin/sh
+# Copy a Mutt-owned temporary HTML attachment before opening it. Mutt may
+# remove the original as soon as this command exits.
+set -eu
+
+if [ "$#" -ne 1 ]; then
+    printf 'usage: %s HTML_FILE\n' "$0" >&2
+    exit 2
+fi
+
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/mutt/html"
+mkdir -p "$cache_dir"
+cached_file=$(mktemp "$cache_dir/attachment-XXXXXX.html")
+cp "$1" "$cached_file"
+
+case "$(uname -s)" in
+    Darwin)
+        open "$cached_file"
+        ;;
+    Linux)
+        xdg-open "$cached_file"
+        ;;
+    *)
+        printf 'unsupported operating system: %s\n' "$(uname -s)" >&2
+        exit 1
+        ;;
+esac
