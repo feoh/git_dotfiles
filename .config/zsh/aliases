@@ -37,6 +37,10 @@ alias toolong=$HOME/.local/bin/tl
 
 alias cargoupdate='cargo install-update -a'
 
+# Volta has no built-in "update all" command. Update the default Node runtime
+# and every globally installed package to its latest published version.
+alias voltaupdate='volta list --default --format plain | awk '\''BEGIN { print "node@latest" } $1 == "package" { pkg=$2; sub(/@[^@]+$/, "", pkg); print pkg "@latest" }'\'' | xargs volta install'
+
 # Unfuck Wayland on WSL2
 alias fixwway='ln -s /mnt/wslg/runtime-dir/wayland-0* /run/user/1000/'
 
@@ -52,6 +56,13 @@ alias gprune='git branch --merged $(git rev-parse --verify main >/dev/null 2>&1 
 
 # software installs
 alias ur='uv run'
+
+# Route Witan by its configured target. Personal S3 commands receive personal
+# AWS credentials; work, HTTP, and local targets keep the current environment.
+witan() {
+    "$HOME/.local/bin/witan-route-exec" -- \
+        "$HOME/.local/share/uv/tools/ol-agent-kit/bin/witan" "$@"
+}
 
 
 # Random nodejs software I want :)
