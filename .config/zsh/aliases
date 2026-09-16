@@ -61,7 +61,7 @@ alias ur='uv run'
 # AWS credentials; work, HTTP, and local targets keep the current environment.
 witan() {
     "$HOME/.local/bin/witan-route-exec" -- \
-        "$HOME/.local/share/uv/tools/ol-agent-kit/bin/witan" "$@"
+        "$HOME/.local/bin/witan" "$@"
 }
 
 

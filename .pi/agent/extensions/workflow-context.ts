@@ -26,15 +26,10 @@
 import { spawn, spawnSync } from "node:child_process";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-// Resolve Witan's target from the current repository before launching it. The
-// wrapper injects personal AWS credentials only for the personal S3 graph;
-// work, HTTP, and local targets retain the caller's existing environment.
-const witanRouteExec = `${process.env.HOME}/.local/bin/witan-route-exec`;
-
 /** Run a witan subcommand detached in the background; ignore all failures. */
 function runInBackground(args: string[], cwd?: string): void {
 	try {
-		const child = spawn(witanRouteExec, ["--", "witan", ...args], {
+		const child = spawn("witan", args, {
 			detached: true,
 			stdio: "ignore",
 			...(cwd ? { cwd } : {}),
@@ -49,7 +44,7 @@ function runInBackground(args: string[], cwd?: string): void {
 export default function workflowContextExtension(pi: ExtensionAPI): void {
 	pi.on("before_agent_start", async (event: any, ctx: any) => {
 		try {
-			const r = spawnSync(witanRouteExec, ["--", "witan", "inject-context"], {
+			const r = spawnSync("witan", ["inject-context"], {
 				encoding: "utf8",
 				timeout: 5000,
 				cwd: ctx?.cwd,
