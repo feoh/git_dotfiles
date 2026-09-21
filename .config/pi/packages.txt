@@ -1,0 +1,8 @@
+# Pi packages that should be configured on every machine.
+# Compare this manifest with the current machine using /extensions-diff in Pi.
+npm:pi-mcp-adapter
+npm:pi-claude-bridge
+npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7
+npm:pi-subagents
+npm:@juicesharp/rpiv-ask-user-question
+npm:pi-web-access
