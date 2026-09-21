@@ -4,6 +4,12 @@
 
 - Personal projects generally live locally under `~/src/personal` and use GitHub repositories under the GitHub user `feoh`.
 
+## TrueNAS administration
+
+- Never call the deprecated TrueNAS REST API under `/api/v2.0`, including for one-off inspection or administration.
+- For remote automation, use the supported JSON-RPC 2.0 WebSocket API at `/api/current` and follow the authentication method documented for the installed TrueNAS release. For approved one-off administration, prefer SSH plus NAS-local `midclt call`, which uses the supported middleware client.
+- Never reuse SMB mount credentials for TrueNAS API authentication. Use a purpose-specific, least-privilege API credential when remote API access is required, and never expose credentials in command arguments, logs, responses, or session artifacts.
+
 ## Local experiments and branch comparison
 
 - Always use `git worktree` rather than switching branches in my working checkout. Create throwaway worktrees outside the repo (e.g. `git worktree add /tmp/<repo>-<ref> <ref>`) and remove them with `git worktree remove` when done.
