@@ -212,3 +212,15 @@ _agent_with_op() {
 
 pi() { _agent_with_op pi "$@" }
 claude() { _agent_with_op claude "$@" }
+
+# Slugs of active witan projects whose title or slug matches $1. witan logs HTTP
+# requests to stderr, so only stdout is valid JSON for jq.
+witan-slugs() {
+  witan projects --output-format json 2>/dev/null |
+    jq -r --arg q "$1" '
+      .rows[]
+      | select(.status == "active")
+      | select((.title + " " + .slug) | ascii_downcase | contains($q | ascii_downcase))
+      | .slug
+    '
+}

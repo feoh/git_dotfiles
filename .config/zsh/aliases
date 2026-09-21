@@ -57,13 +57,6 @@ alias gprune='git branch --merged $(git rev-parse --verify main >/dev/null 2>&1 
 # software installs
 alias ur='uv run'
 
-# Route Witan by its configured target. Personal S3 commands receive personal
-# AWS credentials; work, HTTP, and local targets keep the current environment.
-witan() {
-    "$HOME/.local/bin/witan-route-exec" -- \
-        "$HOME/.local/bin/witan" "$@"
-}
-
 
 # Random nodejs software I want :)
 alias marp='npx -y @marp-team/marp-cli@latest'

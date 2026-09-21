@@ -14,9 +14,9 @@
 # Env: WITAN_MEMORY_URI (default: ~/.local/share/witan/graph.omni)
 # Fallback for repos matching no [targets.*] block. Points at the personal
 # S3 store so unmatched writes never land back in a local or pre-split graph.
-# Run Witan through ~/.local/bin/witan-route-exec so personal S3 commands get
-# personal credentials while work/HTTP/local targets keep their own context.
-server = "s3://personal-witan/graph.omni"
+server = "s3://personal-witan/graph-v9.omni"
+s3_profile = "personal"
+s3_region = "us-east-1"
 
 # Bearer token, required only for an http:// server.
 # Env: WITAN_MEMORY_TOKEN
@@ -91,9 +91,8 @@ match_orgs = ["mitodl", "openedx"]
 code_transport = "mcp"
 
 [targets.personal]
-server = "s3://personal-witan/graph.omni"
+server = "s3://personal-witan/graph-v9.omni"
+s3_profile = "personal"
+s3_region = "us-east-1"
 match_orgs = ["feoh", "nokse22", "katelouie", "support-in-need"]
 match_paths = ["~/src/personal"]
-
-[targets.work]
-server = "~/.local/share/witan-work/graph.omni"
