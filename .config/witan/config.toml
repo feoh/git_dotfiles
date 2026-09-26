@@ -12,11 +12,10 @@
 
 # Graph store location: a local path, s3://, or http:// URI.
 # Env: WITAN_MEMORY_URI (default: ~/.local/share/witan/graph.omni)
-# Fallback for repos matching no [targets.*] block. Points at the personal
-# S3 store so unmatched writes never land back in a local or pre-split graph.
-server = "s3://personal-witan/graph-v9.omni"
-s3_profile = "personal"
-s3_region = "us-east-1"
+# Fallback for repos matching no [targets.*] block. The VM owns all personal
+# writes; the old S3 graph is retained only as a pre-cutover recovery source.
+server = "https://witan.reedfish-regulus.ts.net:8443"
+graph = "council"
 
 # Bearer token, required only for an http:// server.
 # Env: WITAN_MEMORY_TOKEN
@@ -91,8 +90,7 @@ match_orgs = ["mitodl", "openedx"]
 code_transport = "mcp"
 
 [targets.personal]
-server = "s3://personal-witan/graph-v9.omni"
-s3_profile = "personal"
-s3_region = "us-east-1"
+server = "https://witan.reedfish-regulus.ts.net:8443"
+graph = "council"
 match_orgs = ["feoh", "nokse22", "katelouie", "support-in-need"]
 match_paths = ["~/src/personal"]

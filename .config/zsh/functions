@@ -212,6 +212,8 @@ _agent_with_op() {
 
 pi() { _agent_with_op pi "$@" }
 claude() { _agent_with_op claude "$@" }
+# The personal Witan server needs WITAN_MEMORY_TOKEN from the same env file.
+witan() { _agent_with_op witan "$@" }
 
 # Slugs of active witan projects whose title or slug matches $1. witan logs HTTP
 # requests to stderr, so only stdout is valid JSON for jq.

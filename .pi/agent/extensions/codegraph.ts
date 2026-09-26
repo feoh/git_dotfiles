@@ -9,16 +9,21 @@
  *                        tool runs.
  *  - before_agent_start: report whether the code graph is indexed (file
  *                        count, last-updated) or still being built, plus
- *                        cross-repo coverage and the ToolSearch +
- *                        code_find_definition calls to make against it.
+ *                        cross-repo coverage and how to reach the code_*
+ *                        tools. Runs `inject-context --client pi`, so the
+ *                        block names pi-mcp-adapter's `mcp` proxy
+ *                        (search, then call) rather than Claude's
+ *                        ToolSearch, which Pi does not have.
  *  - session_shutdown  : opportunistically compact the current repo's store
  *                        and the shared cross-repo bridge store (throttled;
  *                        see witan_code.maintenance) — no session-id
  *                        dependency, unlike workflow-session-checkpoint, so
  *                        this one *is* mirrored under Pi.
  *
- * Best-effort and non-blocking: a missing CLI, non-git dir, or parse failure
- * never disrupts the session. Requires `witan-code` on PATH
+ * Best-effort: a missing CLI, non-git dir, or parse failure never disrupts
+ * the session. Every handler is detached and non-blocking except
+ * before_agent_start, which waits up to INJECT_CONTEXT_TIMEOUT_MS for the
+ * status block (the same budget the Claude hook gets). Requires `witan-code` on PATH
  * (`witan-code setup --agent pi`, or `uv tool install --editable
  * mcp/servers/witan-code`); otherwise it silently no-ops.
  *
@@ -30,6 +35,20 @@ import { execSync, spawn, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { isAbsolute, resolve } from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+
+/**
+ * How long before_agent_start waits for `witan-code inject-context`: 15s, the
+ * same budget as the Claude `UserPromptSubmit` hook `witan-code setup`
+ * installs (`witan_code.setup.INJECT_CONTEXT_TIMEOUT_SECONDS`;
+ * tests/test_setup.py asserts the two agree). The first prompt in a cache
+ * window can pay a ~10s cold store read that must finish once to populate the
+ * on-disk cache; the 5s this used to be killed that read every time, so the
+ * cache never filled and every prompt came back with no block.
+ *
+ * Only this prompt-injection read waits. session_start's index, the per-edit
+ * reindex, and session_shutdown's checkpoint all stay detached.
+ */
+const INJECT_CONTEXT_TIMEOUT_MS = 15_000;
 
 const SRC_EXT = /\.(py|pyi|ts|tsx|js|jsx|mjs|cjs)$/;
 const EDIT_TOOLS = new Set(["edit", "write"]);
@@ -96,12 +115,14 @@ export default function codegraphExtension(pi: ExtensionAPI): void {
 	});
 
 	// Report code-graph readiness before each turn (mirrors the Claude
-	// `witan-code inject-context` UserPromptSubmit hook).
+	// `witan-code inject-context` UserPromptSubmit hook). A timeout, a
+	// missing CLI, or a non-zero exit all land in the `r.status !== 0` branch:
+	// no context, never a thrown error.
 	pi.on("before_agent_start", async (event: any, ctx: any) => {
 		try {
-			const r = spawnSync("witan-code", ["inject-context"], {
+			const r = spawnSync("witan-code", ["inject-context", "--client", "pi"], {
 				encoding: "utf8",
-				timeout: 5000,
+				timeout: INJECT_CONTEXT_TIMEOUT_MS,
 				cwd: ctx?.cwd,
 			});
 			const text = (r.stdout ?? "").trim();

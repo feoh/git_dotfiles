@@ -32,6 +32,10 @@ const COMMAND_TIMEOUT_MS = 60_000;
 const SOPS_BINARY = process.env.SOPS_BINARY || "sops";
 const VAULT_BINARY = process.env.VAULT_BINARY || "vault";
 
+// Shown by /sops-guidelines. The model gets these rules from the sops_secret
+// tool description instead: a tool description reaches every provider,
+// including pi-claude-bridge, which drops extension system-prompt additions
+// and tool promptGuidelines.
 const SOPS_GUIDANCE = `SOPS encrypted secrets workflow:
 - Prefer the sops_secret tool for inspecting, validating, setting, or deleting encrypted values. It never returns plaintext and never accepts plaintext literal values in tool arguments.
 - Supply new values to sops_secret from an environment variable, local file, authenticated Vault KV field, or another encrypted SOPS value.
@@ -601,12 +605,12 @@ function registerSopsTool(pi: ExtensionAPI): void {
 		name: "sops_secret",
 		label: "SOPS Secret",
 		description:
-			'Safely inspect, validate, set, or delete a value in an existing SOPS-encrypted file. Plaintext is never returned and cannot be supplied literally. Set sources: environment variable, local file, authenticated Vault KV field, or another SOPS value. keyPath/sourceKey use bracket syntax such as ["service"]["api_key"]. valueFormat=string stores source text as one string; valueFormat=json parses and stores structured JSON.',
+			'Safely inspect, validate, set, or delete a value in an existing SOPS-encrypted file. Plaintext is never returned and cannot be supplied literally. Set sources: environment variable, local file, authenticated Vault KV field, or another SOPS value. keyPath/sourceKey use bracket syntax such as ["service"]["api_key"]. valueFormat=string stores source text as one string; valueFormat=json parses and stores structured JSON. ' +
+			"Rules for encrypted files: use this tool instead of edit, write, or bash to change them (those are blocked on recognized SOPS files). Never put plaintext secrets in any tool or command argument; the manual fallback is `sops set --value-stdin` or `--value-file`. Do not run generic YAML formatters on them. Do not change SOPS recipients or key metadata unless explicitly asked.",
 		promptSnippet:
 			"Safely inspect, validate, set, or delete encrypted SOPS values without exposing plaintext",
 		promptGuidelines: [
 			"Use sops_secret instead of edit, write, or ad-hoc bash commands whenever changing an existing SOPS-encrypted file.",
-			"Never place plaintext secrets in sops_secret arguments; select environment, file, Vault, or SOPS as the source.",
 		],
 		parameters: Type.Object({
 			action: StringEnum(["inspect", "validate", "set", "delete"] as const),
@@ -744,13 +748,6 @@ async function handleSopsToolCall(
 }
 
 function registerSopsGuards(pi: ExtensionAPI): void {
-	pi.on("before_agent_start", (event) => {
-		const promptMentionsSops = /\b(sops|secret|secrets)\b/i.test(event.prompt);
-		const inInfraRepo =
-			event.systemPromptOptions.cwd.includes("ol-infrastructure");
-		if (!promptMentionsSops && !inInfraRepo) return undefined;
-		return { systemPrompt: `${event.systemPrompt}\n\n${SOPS_GUIDANCE}` };
-	});
 	pi.on("tool_call", handleSopsToolCall);
 }
 
