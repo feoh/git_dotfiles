@@ -213,7 +213,25 @@ _agent_with_op() {
 pi() { _agent_with_op pi "$@" }
 claude() { _agent_with_op claude "$@" }
 # The personal Witan server needs WITAN_MEMORY_TOKEN from the same env file.
-witan() { _agent_with_op witan "$@" }
+# Read it from the cache rather than calling op on every invocation (~2.5s),
+# and export only that one variable. Work targets ignore it.
+witan() {
+  local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-${TMPDIR%/}}/agent-op.env}"
+  local token=
+  if [[ -z "$WITAN_MEMORY_TOKEN" && -z "$AGENT_NO_OP" ]]; then
+    if [[ ! -r "$cache" && -z "$SSH_CONNECTION" ]]; then
+      agent-op-refresh 2>/dev/null
+    fi
+    [[ -r "$cache" ]] && token=$(sed -n 's/^WITAN_MEMORY_TOKEN=//p' "$cache")
+    [[ -z "$token" ]] &&
+      print -u2 "witan: personal Witan token unavailable; run agent-op-refresh from a local session"
+  fi
+  if [[ -n "$token" ]]; then
+    WITAN_MEMORY_TOKEN="$token" command witan "$@"
+  else
+    command witan "$@"
+  fi
+}
 
 # Slugs of active witan projects whose title or slug matches $1. witan logs HTTP
 # requests to stderr, so only stdout is valid JSON for jq.
