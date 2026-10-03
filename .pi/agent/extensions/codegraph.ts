@@ -10,10 +10,12 @@
  *  - before_agent_start: report whether the code graph is indexed (file
  *                        count, last-updated) or still being built, plus
  *                        cross-repo coverage and how to reach the code_*
- *                        tools. Runs `inject-context --client pi`, so the
- *                        block names pi-mcp-adapter's `mcp` proxy
- *                        (search, then call) rather than Claude's
- *                        ToolSearch, which Pi does not have.
+ *                        tools. Runs `inject-context --client pi-builtin`
+ *                        (a codemode search-then-call script, for Pi's
+ *                        built-in MCP), or `--client pi` when
+ *                        pi-mcp-adapter's `mcp` proxy tool is registered,
+ *                        rather than Claude's ToolSearch, which Pi does
+ *                        not have.
  *  - session_shutdown  : opportunistically compact the current repo's store
  *                        and the shared cross-repo bridge store (throttled;
  *                        see witan_code.maintenance) — no session-id
@@ -49,6 +51,22 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
  * reindex, and session_shutdown's checkpoint all stay detached.
  */
 const INJECT_CONTEXT_TIMEOUT_MS = 15_000;
+
+/**
+ * Which `inject-context --client` matches the MCP support this session runs.
+ * pi-mcp-adapter registers a single `mcp` proxy tool (and turns Pi's built-in
+ * MCP off); without it, Pi's built-in MCP hands MCP tools to codemode scripts.
+ * Checked per prompt, since extensions can register tools after start-up.
+ */
+function piClient(pi: ExtensionAPI): "pi" | "pi-builtin" {
+	try {
+		return pi.getAllTools().some((tool) => tool?.name === "mcp")
+			? "pi"
+			: "pi-builtin";
+	} catch {
+		return "pi-builtin";
+	}
+}
 
 const SRC_EXT = /\.(py|pyi|ts|tsx|js|jsx|mjs|cjs)$/;
 const EDIT_TOOLS = new Set(["edit", "write"]);
@@ -120,11 +138,16 @@ export default function codegraphExtension(pi: ExtensionAPI): void {
 	// no context, never a thrown error.
 	pi.on("before_agent_start", async (event: any, ctx: any) => {
 		try {
-			const r = spawnSync("witan-code", ["inject-context", "--client", "pi"], {
-				encoding: "utf8",
-				timeout: INJECT_CONTEXT_TIMEOUT_MS,
-				cwd: ctx?.cwd,
-			});
+			const client = piClient(pi);
+			const r = spawnSync(
+				"witan-code",
+				["inject-context", "--client", client],
+				{
+					encoding: "utf8",
+					timeout: INJECT_CONTEXT_TIMEOUT_MS,
+					cwd: ctx?.cwd,
+				},
+			);
 			const text = (r.stdout ?? "").trim();
 			if (r.status !== 0 || !text) return;
 			return { systemPrompt: `${event.systemPrompt ?? ""}\n\n${text}` };

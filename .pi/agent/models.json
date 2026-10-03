@@ -1,20 +1,33 @@
 {
   "providers": {
     "ollama": {
-      "baseUrl": "http://localhost:11434/v1",
       "api": "openai-completions",
       "apiKey": "ollama",
+      "baseUrl": "http://127.0.0.1:11434/v1",
       "compat": {
         "supportsDeveloperRole": false,
         "supportsReasoningEffort": false
       },
       "models": [
         {
+          "contextWindow": 131072,
           "id": "gemma4:latest",
+          "input": [
+            "text",
+            "image"
+          ],
           "name": "Gemma 4 8B (Ollama)",
-          "reasoning": true,
-          "input": ["text", "image"],
-          "contextWindow": 131072
+          "reasoning": true
+        },
+        {
+          "_launch": true,
+          "contextWindow": 262144,
+          "id": "qwen3.8:latest",
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
         }
       ]
     }
