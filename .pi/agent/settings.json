@@ -8,18 +8,16 @@
   "defaultProvider": "claude-bridge",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "openai-codex/gpt-5.6-sol",
     "ollama/gemma4:latest",
     "claude-bridge/claude-sonnet-5",
     "openai-codex/gpt-6-astra",
     "claude-bridge/claude-fable-5-1",
     "claude-bridge/claude-opus-5-5",
     "openai-codex/gpt-6-luna",
-    "openai-codex/gpt-6-sol",
     "openai-codex/gpt-6.1-sol",
     "claude-bridge/claude-sonnet-5-5"
   ],
-  "lastChangelogVersion": "1.0.0",
+  "lastChangelogVersion": "1.0.4",
   "packages": [
     "git:github.com/elidickinson/pi-claude-bridge",
     "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",
