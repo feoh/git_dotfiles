@@ -17,6 +17,11 @@
 - Note that per-worktree tooling state is not shared: a `uv` project needs its own `uv sync` in each worktree.
 - Clean up in the same session as the mess: delete scratch files, tear down containers that were started for the task, and restore tooling state that was changed. Say so explicitly when something cannot be restored, and why.
 
+## Waiting on long-running work
+
+- Never block a turn polling CI, deploys, or other long-running work (e.g. a `bash` loop of `sleep` + status checks). A running tool call stops the harness from accepting steering.
+- Instead, delegate the wait to an async subagent that notifies the session on completion, or check once, report what's still pending, and return control.
+
 ## GitHub issues
 
 - The GitHub CLI (`gh`) is available and should be used for GitHub issue work.
