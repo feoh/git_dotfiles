@@ -161,6 +161,117 @@ function stableJson(value: unknown): string {
 	return JSON.stringify(value);
 }
 
+type YamlLine = { indent: number; text: string };
+
+const YAML_KEY_PATTERN = /^([A-Za-z0-9_.-]+):(?:\s+(.*))?$/;
+
+function isYamlSequenceItem(line: YamlLine): boolean {
+	return line.text === "-" || line.text.startsWith("- ");
+}
+
+function parseYamlScalar(raw: string): string {
+	if (raw.startsWith('"')) {
+		const parsed: unknown = JSON.parse(raw);
+		if (typeof parsed !== "string") throw new Error("unsupported scalar");
+		return parsed;
+	}
+	if (raw.startsWith("'")) {
+		if (raw.length < 2 || !raw.endsWith("'"))
+			throw new Error("unterminated scalar");
+		return raw.slice(1, -1).replace(/''/g, "'");
+	}
+	if (/^[[{&*!|>%@`#]/.test(raw) || /\s#/.test(raw))
+		throw new Error("unsupported scalar");
+	return raw;
+}
+
+// Parses the small block-style YAML subset that SOPS emits for its metadata
+// (mappings, sequences, plain/quoted scalars and block scalars) so that the
+// fingerprint ignores formatting such as sequence indentation. Anything outside
+// that subset throws, and callers fall back to a raw-text fingerprint.
+function parseSopsYamlBlock(block: string): unknown {
+	const lines: YamlLine[] = block
+		.split(/\r?\n/)
+		.filter((line) => line.trim() !== "")
+		.map((line) => {
+			const text = line.trimStart();
+			if (/^\s*\t/.test(line)) throw new Error("tab indentation");
+			return { indent: line.length - text.length, text: text.trimEnd() };
+		});
+	let index = 0;
+
+	const parseNode = (): unknown =>
+		isYamlSequenceItem(lines[index])
+			? parseSequence(lines[index].indent)
+			: parseMapping(lines[index].indent);
+
+	const parseChild = (parentIndent: number): unknown => {
+		const next = lines[index];
+		if (
+			next &&
+			(next.indent > parentIndent ||
+				(next.indent === parentIndent && isYamlSequenceItem(next)))
+		)
+			return parseNode();
+		return null;
+	};
+
+	const parseMapping = (indent: number): Record<string, unknown> => {
+		const result: Record<string, unknown> = {};
+		while (index < lines.length) {
+			const line = lines[index];
+			if (line.indent < indent) break;
+			if (line.indent > indent) throw new Error("unexpected indentation");
+			// An offset-0 sequence item at this indent belongs to the parent.
+			if (isYamlSequenceItem(line)) break;
+			const match = YAML_KEY_PATTERN.exec(line.text);
+			if (!match) throw new Error("unsupported mapping entry");
+			const [, key, rest = ""] = match;
+			if (Object.hasOwn(result, key)) throw new Error("duplicate key");
+			index += 1;
+			if (rest === "") {
+				result[key] = parseChild(indent);
+			} else if (/^[|>][-+]?$/.test(rest)) {
+				const content: string[] = [];
+				while (index < lines.length && lines[index].indent > indent) {
+					content.push(lines[index].text);
+					index += 1;
+				}
+				result[key] = content.join("\n");
+			} else {
+				result[key] = parseYamlScalar(rest);
+			}
+		}
+		return result;
+	};
+
+	const parseSequence = (indent: number): unknown[] => {
+		const result: unknown[] = [];
+		while (index < lines.length) {
+			const line = lines[index];
+			if (line.indent > indent) throw new Error("unexpected indentation");
+			if (line.indent < indent || !isYamlSequenceItem(line)) break;
+			const rest = line.text.slice(1).trimStart();
+			if (rest === "") {
+				index += 1;
+				result.push(parseChild(indent));
+			} else if (YAML_KEY_PATTERN.test(rest)) {
+				const column = indent + line.text.length - rest.length;
+				lines[index] = { indent: column, text: rest };
+				result.push(parseMapping(column));
+			} else {
+				index += 1;
+				result.push(parseYamlScalar(rest));
+			}
+		}
+		return result;
+	};
+
+	const parsed = parseMapping(0);
+	if (index !== lines.length) throw new Error("trailing content");
+	return parsed;
+}
+
 export function stableSopsMetadata(content: string): string | undefined {
 	try {
 		const parsed = JSON.parse(content) as { sops?: Record<string, unknown> };
@@ -178,6 +289,21 @@ export function stableSopsMetadata(content: string): string | undefined {
 
 	const yamlMatch = content.match(/(?:^|\n)(sops:\s*\n[\s\S]*)$/m);
 	if (yamlMatch) {
+		try {
+			const parsed = parseSopsYamlBlock(yamlMatch[1]) as {
+				sops?: unknown;
+			};
+			if (parsed.sops && typeof parsed.sops === "object") {
+				const {
+					mac: _mac,
+					lastmodified: _lastmodified,
+					...metadata
+				} = parsed.sops as Record<string, unknown>;
+				return stableJson(metadata);
+			}
+		} catch {
+			// Outside the supported subset; compare the raw text instead.
+		}
 		return yamlMatch[1]
 			.replace(/^(\s+)(?:mac|lastmodified):.*$/gm, "$1<mutable-field>")
 			.trimEnd();
