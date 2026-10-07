@@ -4,13 +4,17 @@
   },
   "mcpServers": {
     "todoist": {
-      "command": "npx",
+      "command": "op",
       "args": [
+        "run",
+        "--no-masking",
+        "--",
+        "npx",
         "-y",
         "@doist/todoist-mcp"
       ],
       "env": {
-        "TODOIST_API_KEY": "${TODOIST_API_KEY}"
+        "TODOIST_API_KEY": "op://6duz64vzrdrddopparqyvsgu2a/xtlasifuwbtfs4dtnyynkbqbmm/credential"
       },
       "lifecycle": "lazy"
     }
