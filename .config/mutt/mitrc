@@ -21,6 +21,11 @@ set sort = 'threads'
 set sort_aux = 'last-date-received'
 set imap_check_subscribed
 
+# CACHES. Kept apart from the personal account's ~/.cache/mutt so the two
+# accounts never share a header cache file.
+set header_cache = ~/.cache/mutt-mit/headers
+set message_cachedir = ~/.cache/mutt-mit/bodies
+
 set editor='nvim'
 
 source ~/.config/mutt/mime.rc
@@ -30,3 +35,5 @@ macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract U
 macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 
 set signature = ~/.mit-signature
+
+source ~/.config/mutt/colors.rc
