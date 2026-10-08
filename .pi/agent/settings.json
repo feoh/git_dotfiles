@@ -17,7 +17,7 @@
     "openai-codex/gpt-6.1-sol",
     "claude-bridge/claude-sonnet-5-5"
   ],
-  "lastChangelogVersion": "1.0.4",
+  "lastChangelogVersion": "1.1.0",
   "packages": [
     "git:github.com/elidickinson/pi-claude-bridge",
     "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",

@@ -192,11 +192,11 @@ _agent_with_op() {
   # on the local GUI session; over SSH it blocks forever. Remote sessions reuse
   # the cache a local session left behind instead of calling op at all.
   if [[ -z "$SSH_CONNECTION" ]]; then
-    agent-op-refresh || print -u2 "${bin}: 1Password refresh failed; falling back to cache"
+    agent-op-refresh || print -u2 "${bin:t}: 1Password refresh failed; falling back to cache"
   fi
 
   if [[ ! -r "$cache" ]]; then
-    print -u2 "${bin}: no credential cache at $cache; run agent-op-refresh from a local session"
+    print -u2 "${bin:t}: no credential cache at $cache; run agent-op-refresh from a local session"
     command "$bin" "$@"
     return
   fi
@@ -210,7 +210,8 @@ _agent_with_op() {
   )
 }
 
-pi() { _agent_with_op pi "$@" }
+# Pin the curl-installed (managed) pi so a stray npm/volta global can't shadow it.
+pi() { _agent_with_op "$HOME/.local/bin/pi" "$@" }
 claude() { _agent_with_op claude "$@" }
 # The personal Witan server needs WITAN_MEMORY_TOKEN from the same env file.
 # Read it from the cache rather than calling op on every invocation (~2.5s),

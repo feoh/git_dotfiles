@@ -22,6 +22,11 @@
 - Never block a turn polling CI, deploys, or other long-running work (e.g. a `bash` loop of `sleep` + status checks). A running tool call stops the harness from accepting steering.
 - Instead, delegate the wait to an async subagent that notifies the session on completion, or check once, report what's still pending, and return control.
 
+## Subagents on claude-bridge models
+
+- Run pi-subagents native children on `claude-bridge/*` models with `async: true`. Never pass `async: false` for them; foreground children fail prompt-capture (elidickinson/pi-claude-bridge#178). Avoid foreground-forcing options (clarify mode) on bridge models.
+- Remove this section once pi-claude-bridge#178 is fixed.
+
 ## GitHub issues
 
 - The GitHub CLI (`gh`) is available and should be used for GitHub issue work.
