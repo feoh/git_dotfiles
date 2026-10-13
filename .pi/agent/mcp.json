@@ -1,0 +1,50 @@
+{
+  "mcpServers": {
+    "witan": {
+      "command": "witan",
+      "args": [
+        "serve"
+      ],
+      "env": {
+        "WITAN_AUTHOR": "Christopher Patti"
+      }
+    },
+    "rootly": {
+      "url": "https://mcp.rootly.com/mcp"
+    },
+    "trello": {
+      "url": "https://mcp.trello.com/v1"
+    },
+    "fastly": {
+      "command": "fastly-mcp"
+    },
+    "todoist": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@doist/todoist-mcp"
+      ]
+    },
+    "toolhive-swe-ci": {
+      "url": "https://toolhive-swe.ci.ol.mit.edu/mcp",
+      "oauth": {
+        "clientId": "toolhive-swe-cli",
+        "callbackUrl": "http://localhost:8080/callback"
+      }
+    },
+    "toolhive-swe-qa": {
+      "url": "https://toolhive-swe.qa.ol.mit.edu/mcp",
+      "oauth": {
+        "clientId": "toolhive-swe-cli",
+        "callbackUrl": "http://localhost:8080/callback"
+      }
+    },
+    "toolhive-swe-prod": {
+      "url": "https://toolhive-swe.ol.mit.edu/mcp",
+      "oauth": {
+        "clientId": "toolhive-swe-cli",
+        "callbackUrl": "http://localhost:8080/callback"
+      }
+    }
+  }
+}

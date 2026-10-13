@@ -6,6 +6,7 @@
 !AGENTS.md
 !settings.json
 !models.json
+!mcp.json
 !extensions/
 !extensions/**
 !skills/
