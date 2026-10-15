@@ -2,6 +2,7 @@
 [user]
 	name = Christopher Patti
 	email = feoh@feoh.org
+	signingkey = 1D7522791CD34ABD
 # Please adapt and uncomment the following lines:
 #	name = Christopher Patti
 #	email = feoh@feoh.org
@@ -57,7 +58,7 @@
   verbose = true
   # Sign commits with GPG
   # Needs fix :)
-  gpgsign = false
+	gpgsign = true
 
 [rebase]
   # Automatically squash commits marked as squash

@@ -60,3 +60,6 @@ alias ur='uv run'
 
 # Random nodejs software I want :)
 alias marp='npx -y @marp-team/marp-cli@latest'
+
+# Be logged in to all MIT OL pipelines
+alias flylogin='fly login -t pr-main -c https://cicd.odl.mit.edu && fly login -t infrastructure -c https://cicd.odl.mit.edu &&  fly login -t ocw  -c https://cicd.odl.mit.edu'

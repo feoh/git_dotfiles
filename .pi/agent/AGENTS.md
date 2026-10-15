@@ -3,12 +3,17 @@
 ## Personal projects
 
 - Personal projects generally live locally under `~/src/personal` and use GitHub repositories under the GitHub user `feoh`.
+- For SSH to hosts in personal homelab projects, do not block work on strict host-key verification. If a host key is unknown or has changed, remove the stale entry and update `known_hosts` with the current key, then continue. This is an owner-approved convenience policy for the personal homelab; do not apply it to work/organizational infrastructure or other users' systems.
 
 ## TrueNAS administration
 
 - Never call the deprecated TrueNAS REST API under `/api/v2.0`, including for one-off inspection or administration.
 - For remote automation, use the supported JSON-RPC 2.0 WebSocket API at `/api/current` and follow the authentication method documented for the installed TrueNAS release. For approved one-off administration, prefer SSH plus NAS-local `midclt call`, which uses the supported middleware client.
 - Never reuse SMB mount credentials for TrueNAS API authentication. Use a purpose-specific, least-privilege API credential when remote API access is required, and never expose credentials in command arguments, logs, responses, or session artifacts.
+
+## Storing secrets in Vault
+
+- When a secret needs to go into Vault, don't write it there directly (no `vault kv put`). Encrypt it into the repo's SOPS files with the `sops` command, and let the Pulumi stack write it to Vault (e.g. `read_yaml_secrets` plus `vault.generic.Secret` in ol-infrastructure).
 
 ## Local experiments and branch comparison
 
@@ -26,6 +31,10 @@
 
 - Run pi-subagents native children on `claude-bridge/*` models with `async: true`. Never pass `async: false` for them; foreground children fail prompt-capture (elidickinson/pi-claude-bridge#178). Avoid foreground-forcing options (clarify mode) on bridge models.
 - Remove this section once pi-claude-bridge#178 is fixed.
+
+## Pull requests in summaries
+
+- Whenever a summary or report mentions a pull request, give its full clickable URL (e.g. `https://github.com/mitodl/ol-infrastructure/pull/6307`), not a bare `owner/repo#N` or `#N`. PRs exist for human review, and the user needs to be able to open and share them in one click. Do the same for any issue that needs action.
 
 ## GitHub issues
 
