@@ -199,3 +199,8 @@
   smc = log --author=\"Chris Patti\" --grep=\"$1\"
 [credential "https://git.heroku.com"]
 	helper = !heroku git:credentials
+
+# Machine-specific overrides (untracked). Keep this last so it wins.
+# Silently skipped on machines that don't have the file (e.g. the Mac).
+[include]
+  path = ~/.config/git/local.gitconfig

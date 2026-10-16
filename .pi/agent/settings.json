@@ -18,7 +18,7 @@
     "claude-bridge/claude-sonnet-5-5",
     "claude-bridge/claude-haiku-5-5"
   ],
-  "lastChangelogVersion": "1.2.0",
+  "lastChangelogVersion": "1.3.0",
   "packages": [
     "git:github.com/elidickinson/pi-claude-bridge",
     "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",
