@@ -1,5 +1,10 @@
 # Global Pi agent instructions
 
+## Run it yourself
+
+- Don't ask me to run low- to no-risk invocations that you could just run yourself. If a command is reversible or read-only, or it is the next step of work I already asked for (e.g. `gh release create` once its CI check passes, `uv sync`, re-running a check), run it and report the result instead of handing me the command.
+- Ask first only for things that are hard to undo or that I haven't asked for, and say why. Credentials or actions only I can perform (like a web UI sign-in) are the remaining exceptions.
+
 ## Personal projects
 
 - Personal projects generally live locally under `~/src/personal` and use GitHub repositories under the GitHub user `feoh`.

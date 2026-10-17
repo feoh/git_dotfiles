@@ -9,7 +9,6 @@
   "defaultThinkingLevel": "high",
   "enabledModels": [
     "ollama/gemma4:latest",
-    "claude-bridge/claude-sonnet-5",
     "openai-codex/gpt-6-astra",
     "claude-bridge/claude-fable-5-1",
     "claude-bridge/claude-opus-5-5",
