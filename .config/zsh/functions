@@ -183,6 +183,11 @@ _agent_with_op() {
   local cache="${AGENT_OP_CACHE_FILE:-${XDG_RUNTIME_DIR:-${TMPDIR%/}}/agent-op.env}"
   local line
 
+  # Agents commit unsigned: 1Password's signer needs an unlocked vault and a
+  # click, which stalls unattended runs. Sign afterwards with `git sign <base>`.
+  # local -x scopes the export to the agent process, not the interactive shell.
+  local -x GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false
+
   if [[ -n "$AGENT_NO_OP" || ! -r "$env_file" ]]; then
     command "$bin" "$@"
     return

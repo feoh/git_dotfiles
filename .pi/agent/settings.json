@@ -9,23 +9,25 @@
   "defaultThinkingLevel": "high",
   "enabledModels": [
     "ollama/gemma4:latest",
-    "openai-codex/gpt-6-astra",
     "claude-bridge/claude-fable-5-1",
     "claude-bridge/claude-opus-5-5",
-    "openai-codex/gpt-6-luna",
-    "openai-codex/gpt-6.1-sol",
     "claude-bridge/claude-sonnet-5-5",
-    "claude-bridge/claude-haiku-5-5"
+    "claude-bridge/claude-haiku-5-5",
+    "openai/gpt-6-luna",
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6-astra"
   ],
-  "lastChangelogVersion": "1.3.0",
+  "lastChangelogVersion": "1.4.0",
   "packages": [
     "git:github.com/elidickinson/pi-claude-bridge",
     "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",
     "npm:pi-subagents",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-web-access",
-    "npm:@mrclrchtr/supi-insights"
+    "npm:@mrclrchtr/supi-insights",
+    "npm:pi-inspector"
   ],
   "theme": "dark",
-  "hideThinkingBlock": true
+  "hideThinkingBlock": true,
+  "deviceId": "c3ff548a-ae8c-465b-800e-3b66219759e6"
 }
