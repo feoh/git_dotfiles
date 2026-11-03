@@ -2,7 +2,18 @@
   "compaction": {
     "enabled": true,
     "keepRecentTokens": 16000,
-    "reserveTokens": 20000
+    "reserveTokens": 20000,
+    "modelOverrides": {
+      "claude-bridge/claude-opus-5-5": {
+        "reserveTokens": 300000
+      },
+      "claude-bridge/claude-sonnet-5-5": {
+        "reserveTokens": 300000
+      },
+      "claude-bridge/claude-fable-5-1": {
+        "reserveTokens": 300000
+      }
+    }
   },
   "defaultModel": "claude-opus-5-5",
   "defaultProvider": "claude-bridge",
@@ -17,7 +28,7 @@
     "openai/gpt-6.1-sol",
     "openai/gpt-6-astra"
   ],
-  "lastChangelogVersion": "1.4.0",
+  "lastChangelogVersion": "1.5.0",
   "packages": [
     "git:github.com/elidickinson/pi-claude-bridge",
     "npm:@ff-labs/pi-fff@0.10.6-nightly.9c39dd7",
@@ -29,5 +40,10 @@
   ],
   "theme": "dark",
   "hideThinkingBlock": true,
-  "deviceId": "c3ff548a-ae8c-465b-800e-3b66219759e6"
+  "deviceId": "c3ff548a-ae8c-465b-800e-3b66219759e6",
+  "extensionChangelogVersions": {
+    "{\"source\":\"git:github.com/elidickinson/pi-claude-bridge\",\"scope\":\"user\"}": "0.9.3",
+    "{\"source\":\"npm:pi-subagents\",\"scope\":\"user\"}": "0.84.0",
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.46.0"
+  }
 }

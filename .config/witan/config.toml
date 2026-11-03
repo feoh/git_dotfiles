@@ -27,7 +27,7 @@ agent = "pi"
 
 # Default --model passed to the agent by `witan run`.
 # Env: WITAN_MODEL
-model = "claude-opus-5"
+model = "claude-opus-5-5"
 
 # ── Named targets ────────────────────────────────────────────────────────────
 # Route different repos/orgs at different stores (e.g. work vs. personal).

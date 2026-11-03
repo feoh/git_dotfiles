@@ -85,6 +85,8 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 [[ -d /snap/bin ]] && export PATH="$PATH:/snap/bin"
 [[ -d $HOME/.pulumi/bin ]] && export PATH="$PATH:$HOME/.pulumi/bin"
 
+[[ -d $HOME/go/bin ]] && export PATH="$PATH:$HOME/go/bin"
+
 # 1Password biometric auth + plugins
 export OP_BIOMETRIC_UNLOCK_ENABLED=true
 [[ -f $HOME/.config/op/plugins.sh ]] && source $HOME/.config/op/plugins.sh
@@ -111,12 +113,20 @@ export PI_AGENT_SESSIONS_DIR="$HOME/.pi/sessions"
 # Don't warn me about pointless things, fff :)
 export FFF_WARN_HOME_SCAN=0
 
-# Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
-# by a short-circuited `&&` on the last line above.
-true
-
+# Perl hoo-ha!
 PATH="/home/feoh/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/feoh/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="/home/feoh/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/feoh/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/feoh/perl5"; export PERL_MM_OPT;
+
+# Make kubectl look at both local-dev and production depending on --context
+# Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
+# by a short-circuited `&&` on the last line above.
+export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/ol-eks.yaml
+
+
+# Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
+# by a short-circuited `&&` on the last line above.
+true
+

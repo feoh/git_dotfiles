@@ -29,6 +29,7 @@
 
 ## Waiting on long-running work
 
+- Always ask yourself, "Is there anything else I can be working on while I wait?" Proactively continue independent, authorized work instead of idling when it is safe to do so; respect task dependencies and avoid interfering with work in progress.
 - Never block a turn polling CI, deploys, or other long-running work (e.g. a `bash` loop of `sleep` + status checks). A running tool call stops the harness from accepting steering.
 - Instead, delegate the wait to an async subagent that notifies the session on completion, or check once, report what's still pending, and return control.
 
@@ -37,9 +38,9 @@
 - Run pi-subagents native children on `claude-bridge/*` models with `async: true`. Never pass `async: false` for them; foreground children fail prompt-capture (elidickinson/pi-claude-bridge#178). Avoid foreground-forcing options (clarify mode) on bridge models.
 - Remove this section once pi-claude-bridge#178 is fixed.
 
-## Pull requests in summaries
+## Link every pull request
 
-- Whenever a summary or report mentions a pull request, give its full clickable URL (e.g. `https://github.com/mitodl/ol-infrastructure/pull/6307`), not a bare `owner/repo#N` or `#N`. PRs exist for human review, and the user needs to be able to open and share them in one click. Do the same for any issue that needs action.
+- Every time you refer to a pull request in text the user reads, present it as a clickable link with its full URL (e.g. `https://github.com/mitodl/ol-infrastructure/pull/6307`). This covers every reply, not just summaries or reports, and repeat mentions of a PR already linked earlier. Never write a bare `PR 1903`, `#1903`, or `owner/repo#1903`. If you know the PR, you have its URL; making the user look it up wastes their time. Do the same for any issue that needs action, and for CI runs or jobs whose status you report.
 
 ## GitHub issues
 
