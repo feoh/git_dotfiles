@@ -7,6 +7,9 @@
  *                        sessions re-hash and skip unchanged files).
  *  - edit / write      : incrementally re-index the edited file after the
  *                        tool runs.
+ *  Both go through `session-init` / `reindex-hook`, the commands the Claude
+ *  hooks run, so they share the checkout's queue and its one drainer, which
+ *  batches the edits and paces its writes (witan_code.hooks).
  *  - before_agent_start: report whether the code graph is indexed (file
  *                        count, last-updated) or still being built, plus
  *                        cross-repo coverage and how to reach the code_*
@@ -83,15 +86,20 @@ function inGitRepo(cwd: string): boolean {
 	}
 }
 
-/** Run a witan-code subcommand detached in the background; ignore all failures. */
-function runInBackground(args: string[], cwd?: string): void {
+/**
+ * Run a witan-code subcommand detached in the background; ignore all failures.
+ * `input`, when given, is written to the child's stdin (a hook payload).
+ */
+function runInBackground(args: string[], cwd?: string, input?: string): void {
 	try {
 		const child = spawn("witan-code", args, {
 			detached: true,
-			stdio: "ignore",
+			stdio: [input === undefined ? "ignore" : "pipe", "ignore", "ignore"],
 			...(cwd ? { cwd } : {}),
 		});
 		child.on("error", () => {}); // CLI not installed, etc.
+		child.stdin?.on("error", () => {});
+		child.stdin?.end(input);
 		child.unref();
 	} catch {
 		/* ignore */
@@ -113,7 +121,7 @@ export default function codegraphExtension(pi: ExtensionAPI): void {
 
 	// Seed / refresh the whole repo once per session (incremental).
 	pi.on("session_start", async (_event, ctx) => {
-		if (inGitRepo(ctx.cwd)) runInBackground(["index", ctx.cwd]);
+		if (inGitRepo(ctx.cwd)) runInBackground(["session-init"], ctx.cwd);
 	});
 
 	// Push one entry per edit tool_call (path or "") so the FIFO stays paired
@@ -123,13 +131,20 @@ export default function codegraphExtension(pi: ExtensionAPI): void {
 		pending.push(editedPath(event, ctx.cwd) ?? "");
 	});
 
-	// After a successful edit/write, re-index just that file.
+	// After a successful edit/write, queue that file for the checkout's
+	// drainer. A detached `witan-code index <file>` per edit would bypass it:
+	// one write per edit, and concurrent writers on one branch view.
 	pi.on("tool_result", (event: any, ctx) => {
 		if (!EDIT_TOOLS.has(event?.toolName)) return;
 		const queued = pending.shift() ?? "";
 		if (event?.isError) return;
 		const p = editedPath(event, ctx.cwd) ?? queued;
-		if (p && existsSync(p)) runInBackground(["index", p]);
+		if (p && existsSync(p))
+			runInBackground(
+				["reindex-hook"],
+				ctx.cwd,
+				JSON.stringify({ tool_input: { file_path: p } }),
+			);
 	});
 
 	// Report code-graph readiness before each turn (mirrors the Claude

@@ -5,10 +5,23 @@
 - Don't ask me to run low- to no-risk invocations that you could just run yourself. If a command is reversible or read-only, or it is the next step of work I already asked for (e.g. `gh release create` once its CI check passes, `uv sync`, re-running a check), run it and report the result instead of handing me the command.
 - Ask first only for things that are hard to undo or that I haven't asked for, and say why. Credentials or actions only I can perform (like a web UI sign-in) are the remaining exceptions.
 
+## Opening pull requests
+
+- When I ask for a PR, open it without asking me anything first. The PR is where review and revision happen. This overrides the question and approval steps in PR skills such as `create-ol-pull-request`: don't ask for the title, tickets, description, testing notes or draft status, and don't show the body or the final changes for confirmation before pushing.
+- Write the title and body yourself from the conversation, commits and checks you ran. Use `N/A` for tickets unless one was mentioned, and open it ready for review unless I called it a work in progress.
+- Still run the pre-submit checks (claim audit, independent review, secret scan), fix what they confirm, and then open the PR. Report findings you didn't fix in the PR body or your reply instead of stopping to ask. Stop only if the secret scan finds a real credential.
+
 ## Personal projects
 
 - Personal projects generally live locally under `~/src/personal` and use GitHub repositories under the GitHub user `feoh`.
+- For personal projects, commit and push the working branch; do not create or open a pull request unless I explicitly ask for a PR. A general request to continue autonomously or finish the work means push only.
 - For SSH to hosts in personal homelab projects, do not block work on strict host-key verification. If a host key is unknown or has changed, remove the stale entry and update `known_hosts` with the current key, then continue. This is an owner-approved convenience policy for the personal homelab; do not apply it to work/organizational infrastructure or other users' systems.
+
+## Homelab backups
+
+- The homelab's off-site backup is ZFS replication: TrueNAS on `deepthought` recursively replicates the `nas_general` pool to the Hetzner auction server `thought.feoh.org`. Restic (including the Deepthought Restic/Backrest/B2 pilot) was a failed proof of concept. Never describe Restic as the backup strategy.
+- Data is off-site only once it lands on a `nas_general` dataset (e.g. `/nas/archives`). Proxmox `local-lvm` VM disks are not replicated, so check how a guest's data reaches the NAS before calling local copies redundant.
+- `nas_general` and its replication are unencrypted. Little Fedi's per-VM Restic job (`little-fedi-backup.service`, repo `/nas/archives/little-fedi`) is how its database and secrets reach the NAS encrypted. It is not the failed pilot. Keep it.
 
 ## TrueNAS administration
 
@@ -19,6 +32,13 @@
 ## Storing secrets in Vault
 
 - When a secret needs to go into Vault, don't write it there directly (no `vault kv put`). Encrypt it into the repo's SOPS files with the `sops` command, and let the Pulumi stack write it to Vault (e.g. `read_yaml_secrets` plus `vault.generic.Secret` in ol-infrastructure).
+
+## 1Password prompts at pi startup
+
+- Pi startup should cost me at most one 1Password approval. Before adding or changing anything that calls `op` when pi or a session starts (MCP servers in `~/.pi/agent/mcp.json`, extensions, hooks, provider or settings keys), tell me how many extra prompts it adds and get my OK. Don't make the change without that OK.
+- Pi starts stdio MCP servers as detached processes with no terminal, and 1Password ties CLI approval to the terminal. So every `op run ... -- <server>` wrapper asks for approval on its own.
+- For an MCP secret, set the server's `env` value to `"!/usr/bin/op read 'op://...'"` and run the server binary directly. Pi runs `!` commands one after another inside its own terminal session, so the first approval covers the rest. Note that pi kills a `!` command after 10 seconds.
+- Secrets fetched only when a tool is used (such as the web-search `perplexityApiKey`) don't count against the startup budget.
 
 ## Local experiments and branch comparison
 

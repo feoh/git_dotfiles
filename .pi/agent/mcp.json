@@ -16,14 +16,20 @@
       "url": "https://mcp.trello.com/v1"
     },
     "fastly": {
-      "command": "fastly-mcp"
+      "command": "fastly-mcp",
+      "env": {
+        "FASTLY_API_TOKEN": "!/usr/bin/op read 'op://6duz64vzrdrddopparqyvsgu2a/nscuflq7ol5hj7vzjqsjgqh67m/credential'"
+      }
     },
     "todoist": {
       "command": "npx",
       "args": [
         "-y",
         "@doist/todoist-mcp"
-      ]
+      ],
+      "env": {
+        "TODOIST_API_KEY": "!/usr/bin/op read 'op://6duz64vzrdrddopparqyvsgu2a/xtlasifuwbtfs4dtnyynkbqbmm/credential'"
+      }
     },
     "toolhive-swe-ci": {
       "url": "https://toolhive-swe.ci.ol.mit.edu/mcp",
