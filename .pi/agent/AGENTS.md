@@ -37,7 +37,7 @@
 
 - Pi startup should cost me at most one 1Password approval. Before adding or changing anything that calls `op` when pi or a session starts (MCP servers in `~/.pi/agent/mcp.json`, extensions, hooks, provider or settings keys), tell me how many extra prompts it adds and get my OK. Don't make the change without that OK.
 - Pi starts stdio MCP servers as detached processes with no terminal, and 1Password ties CLI approval to the terminal. So every `op run ... -- <server>` wrapper asks for approval on its own.
-- For an MCP secret, set the server's `env` value to `"!/usr/bin/op read 'op://...'"` and run the server binary directly. Pi runs `!` commands one after another inside its own terminal session, so the first approval covers the rest. Note that pi kills a `!` command after 10 seconds.
+- For an MCP secret, set the server's `env` value to `"!for op in /opt/homebrew/bin/op /usr/local/bin/op /usr/bin/op; do if [ -x $op ]; then exec $op read 'op://...'; fi; done; exit 127"` and run the server binary directly. The loop finds `op` on both macOS (Homebrew) and Linux, and `!` values run under `/bin/sh` without pi's `$VAR` interpolation. Pi runs `!` commands one after another inside its own terminal session, so the first approval covers the rest. Note that pi kills a `!` command after 10 seconds.
 - Secrets fetched only when a tool is used (such as the web-search `perplexityApiKey`) don't count against the startup budget.
 
 ## Local experiments and branch comparison

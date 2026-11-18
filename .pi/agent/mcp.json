@@ -18,7 +18,7 @@
     "fastly": {
       "command": "fastly-mcp",
       "env": {
-        "FASTLY_API_TOKEN": "!/usr/bin/op read 'op://6duz64vzrdrddopparqyvsgu2a/nscuflq7ol5hj7vzjqsjgqh67m/credential'"
+        "FASTLY_API_TOKEN": "!for op in /opt/homebrew/bin/op /usr/local/bin/op /usr/bin/op; do if [ -x $op ]; then exec $op read 'op://6duz64vzrdrddopparqyvsgu2a/nscuflq7ol5hj7vzjqsjgqh67m/credential'; fi; done; exit 127"
       }
     },
     "todoist": {
@@ -28,7 +28,7 @@
         "@doist/todoist-mcp"
       ],
       "env": {
-        "TODOIST_API_KEY": "!/usr/bin/op read 'op://6duz64vzrdrddopparqyvsgu2a/xtlasifuwbtfs4dtnyynkbqbmm/credential'"
+        "TODOIST_API_KEY": "!for op in /opt/homebrew/bin/op /usr/local/bin/op /usr/bin/op; do if [ -x $op ]; then exec $op read 'op://6duz64vzrdrddopparqyvsgu2a/xtlasifuwbtfs4dtnyynkbqbmm/credential'; fi; done; exit 127"
       }
     },
     "toolhive-swe-ci": {
