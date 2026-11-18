@@ -126,6 +126,9 @@ PERL_MM_OPT="INSTALL_BASE=/home/feoh/perl5"; export PERL_MM_OPT;
 export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/ol-eks.yaml
 
 
+# Warn loudly if Tailscale is off (macOS only; see ~/.config/zsh/functions).
+_feoh_tailscale_check
+
 # Always exit .zshrc cleanly so the first prompt's %(?...) isn't poisoned
 # by a short-circuited `&&` on the last line above.
 true

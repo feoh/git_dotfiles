@@ -215,8 +215,29 @@ _agent_with_op() {
   )
 }
 
+# macOS only: shout when Tailscale isn't connected. The personal Witan server is
+# reachable only over Tailscale, and without it every pi prompt stalls ~45s
+# while `witan inject-context` retries. Silent when connected, on other OSes,
+# or when the Tailscale app isn't installed. Skips the CLI if the app isn't
+# running, so a missing GUI can't stall shell startup.
+_feoh_tailscale_check() {
+  [[ $OSTYPE == darwin* ]] || return 0
+  local ts=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+  [[ -x $ts ]] || return 0
+  local state="app not running"
+  if pgrep -xq Tailscale; then
+    state=$("$ts" status --json 2>/dev/null |
+      sed -n 's/.*"BackendState": *"\([^"]*\)".*/\1/p')
+    [[ $state == Running ]] && return 0
+    state=${state:-unknown}
+  fi
+  print -u2 -P "%K{red}%F{white}%B  TAILSCALE IS OFF ($state)  %b%f%k"
+  print -u2 -P "%F{red}Personal Witan is unreachable; pi will stall ~45s per prompt.%f"
+  return 1
+}
+
 # Pin the curl-installed (managed) pi so a stray npm/volta global can't shadow it.
-pi() { _agent_with_op "$HOME/.local/bin/pi" "$@" }
+pi() { _feoh_tailscale_check; _agent_with_op "$HOME/.local/bin/pi" "$@" }
 claude() { _agent_with_op claude "$@" }
 # The personal Witan server needs WITAN_MEMORY_TOKEN from the same env file.
 # Read it from the cache rather than calling op on every invocation (~2.5s),
